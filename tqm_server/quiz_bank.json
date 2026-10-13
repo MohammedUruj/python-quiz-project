@@ -1,0 +1,562 @@
+{
+  "_comment": "Final assessment question bank. 'answer' is the 0-based index of the correct option. Questions marked core:true form the default 20-question assessment. This file is read only by the server; answers are never sent to the browser before submission.",
+  "questions": [
+    {
+      "id": "q01",
+      "core": true,
+      "topic": "TQM principles",
+      "type": "mcq",
+      "prompt": "Which statement best describes Total Quality Management (TQM)?",
+      "options": [
+        "A final-inspection programme run by the quality department",
+        "A one-time certification project that is finished once the audit is passed",
+        "An organisation-wide approach in which everyone continuously improves processes to meet customer needs",
+        "A cost-cutting method that focuses mainly on reducing headcount"
+      ],
+      "answer": 2,
+      "explanation": "TQM is a management approach that involves every function and every person, focuses on customers, manages work as processes and improves continuously. Inspection and certification can be parts of a quality system, but they are not TQM by themselves."
+    },
+    {
+      "id": "q02",
+      "core": true,
+      "topic": "Customer focus",
+      "type": "mcq",
+      "prompt": "In TQM, who counts as a 'customer' of the tyre-building department?",
+      "options": [
+        "Both external customers and internal customers, such as the curing department that receives the green tyres",
+        "Only the sales and distribution team",
+        "Only the drivers who eventually buy the tyres",
+        "Only the plant manager, who sets the targets"
+      ],
+      "answer": 0,
+      "explanation": "TQM recognises internal customers: the next process that receives your output. Tyre building serves curing, and the whole chain serves the external customer."
+    },
+    {
+      "id": "q03",
+      "core": true,
+      "topic": "Prevention vs detection",
+      "type": "scenario",
+      "scenario": "Final inspection catches about 95% of blistered tyres before shipment. The production supervisor says this is good enough.",
+      "prompt": "Why is relying on final inspection alone not enough under TQM?",
+      "options": [
+        "Inspection is the responsibility of a different department, so it is not production's concern",
+        "Inspection is always inaccurate and should be removed completely",
+        "Customers never notice blisters, so the defects do not matter",
+        "Inspection detects defects only after the cost has been incurred, and some still escape; quality has to be built in at the source process"
+      ],
+      "answer": 3,
+      "explanation": "Inspection remains an important control, but it cannot add quality. Preventing the defect where it is created is cheaper and more reliable than sorting good tyres from bad ones afterwards."
+    },
+    {
+      "id": "q04",
+      "core": false,
+      "topic": "Cost of poor quality",
+      "type": "mcq",
+      "prompt": "A defective tyre reaches a customer and results in a warranty claim. Which cost-of-quality category is this?",
+      "options": [
+        "Prevention cost",
+        "External failure cost",
+        "Internal failure cost",
+        "Appraisal cost"
+      ],
+      "answer": 1,
+      "explanation": "Failure costs that occur after the product reaches the customer (warranty, returns, complaint handling, lost reputation) are external failure costs, usually the most damaging category."
+    },
+    {
+      "id": "q05",
+      "core": true,
+      "topic": "Pareto analysis",
+      "type": "mcq",
+      "prompt": "What is the main purpose of a Pareto chart?",
+      "options": [
+        "To rank categories by frequency or impact so the team can focus on the vital few",
+        "To show how a process changes over time",
+        "To prove which root cause created a defect",
+        "To show the relationship between two measured variables"
+      ],
+      "answer": 0,
+      "explanation": "A Pareto chart sorts categories from largest to smallest and adds a cumulative percentage line, helping teams prioritise. It does not identify or prove causes."
+    },
+    {
+      "id": "q06",
+      "core": true,
+      "topic": "Pareto analysis",
+      "type": "chart",
+      "prompt": "The Pareto chart shows last month's tyre defects (total 240). What cumulative percentage do the top two categories represent?",
+      "chart": {
+        "type": "pareto",
+        "title": "Defects by category (fictional data)",
+        "labels": [
+          "Blister",
+          "Splice open",
+          "Bead area",
+          "Flash / trim",
+          "Other"
+        ],
+        "values": [
+          120,
+          60,
+          30,
+          20,
+          10
+        ]
+      },
+      "options": [
+        "50%",
+        "75%",
+        "80%",
+        "90%"
+      ],
+      "answer": 1,
+      "explanation": "Blister (120) + Splice open (60) = 180 of 240 defects = 75%."
+    },
+    {
+      "id": "q07",
+      "core": true,
+      "topic": "Pareto analysis",
+      "type": "scenario",
+      "scenario": "Blisters are the tallest bar on this month's Pareto chart.",
+      "prompt": "What can you correctly conclude?",
+      "options": [
+        "The root cause of blisters has been proven",
+        "All other defect categories can be ignored",
+        "Blisters are the largest contributor and a sensible priority for investigation, but their cause still has to be found and verified",
+        "Blisters are caused by the operators on the night shift"
+      ],
+      "answer": 2,
+      "explanation": "A Pareto chart helps you prioritise. It says nothing about why blisters occur; that requires a root cause investigation backed by evidence."
+    },
+    {
+      "id": "q08",
+      "core": true,
+      "topic": "7 QC tools",
+      "type": "scenario",
+      "scenario": "An inspector wants to record defect types by curing press and shift as they occur, with minimal effort and in a consistent format.",
+      "prompt": "Which tool fits best?",
+      "options": [
+        "Scatter diagram",
+        "Check sheet",
+        "Control chart",
+        "Histogram"
+      ],
+      "answer": 1,
+      "explanation": "A check sheet is a structured form for collecting data at the point of observation. Designing it with press and shift columns also builds stratification into the data collection."
+    },
+    {
+      "id": "q09",
+      "core": false,
+      "topic": "7 QC tools",
+      "type": "mcq",
+      "prompt": "Which tool shows the shape, centre and spread of 100 tread-width measurements?",
+      "options": [
+        "Pareto chart",
+        "Histogram",
+        "Cause-and-effect diagram",
+        "Check sheet"
+      ],
+      "answer": 1,
+      "explanation": "A histogram groups measurements into intervals and shows the distribution: where the data are centred, how widely they spread and the shape of the distribution."
+    },
+    {
+      "id": "q10",
+      "core": false,
+      "topic": "7 QC tools",
+      "type": "mcq",
+      "prompt": "You want to explore whether curing time is related to the hardness of cured rubber samples. Which tool should you use first?",
+      "options": [
+        "Scatter diagram",
+        "Pareto chart",
+        "Check sheet",
+        "Cause-and-effect diagram"
+      ],
+      "answer": 0,
+      "explanation": "A scatter diagram plots pairs of values (curing time, hardness) to reveal a possible relationship between two variables."
+    },
+    {
+      "id": "q11",
+      "core": false,
+      "topic": "Correlation vs causation",
+      "type": "scenario",
+      "scenario": "A scatter diagram shows a strong positive association between ambient humidity and blister rate over the last month.",
+      "prompt": "What is the correct conclusion?",
+      "options": [
+        "Humidity is proven to be the root cause of blisters",
+        "Blisters should now be ignored until the weather changes",
+        "The scatter diagram is wrong because blisters cannot be measured",
+        "The association is worth investigating, but it does not by itself prove that humidity causes blisters"
+      ],
+      "answer": 3,
+      "explanation": "Correlation is not causation. Both variables could be driven by something else (for example, the season or a coinciding equipment issue). The suspected cause must be tested and verified."
+    },
+    {
+      "id": "q12",
+      "core": true,
+      "topic": "Control charts",
+      "type": "mcq",
+      "prompt": "What is the difference between control limits and specification limits?",
+      "options": [
+        "They are the same thing with different names",
+        "Specification limits are calculated from process data; control limits are set by the customer",
+        "Control limits are calculated from process data and describe its natural variation; specification limits come from customer or design requirements",
+        "Control limits are always wider than specification limits"
+      ],
+      "answer": 2,
+      "explanation": "Control limits describe how the process actually behaves (voice of the process). Specification limits state what is required (voice of the customer). A process can be in control and still produce out-of-specification product."
+    },
+    {
+      "id": "q13",
+      "core": true,
+      "topic": "Control charts",
+      "type": "chart",
+      "prompt": "This individuals control chart shows curing platen temperature. Point 17 is above the upper control limit (UCL). What is the most appropriate response?",
+      "chart": {
+        "type": "control",
+        "title": "Platen temperature, Press 7 (fictional data, deg C)",
+        "points": [
+          170.2,
+          169.6,
+          170.8,
+          170.1,
+          169.3,
+          170.5,
+          170.9,
+          169.8,
+          170.3,
+          169.5,
+          170.6,
+          170.0,
+          169.7,
+          170.4,
+          170.2,
+          169.9,
+          173.6,
+          170.3,
+          170.1,
+          169.8
+        ],
+        "cl": 170.0,
+        "ucl": 172.4,
+        "lcl": 167.6,
+        "unit": "deg C"
+      },
+      "options": [
+        "Treat it as a signal of a possible special cause and investigate what changed at that time",
+        "Ignore it, because it may still be inside the specification",
+        "Adjust the temperature setpoint after every reading to keep the line flat",
+        "Recalculate the control limits immediately so that the point falls inside them"
+      ],
+      "answer": 0,
+      "explanation": "A point outside the control limits is a signal that something unusual (a special cause) may have occurred. Investigate it. Adjusting after every reading (tampering) increases variation, and widening limits to hide a signal defeats the purpose of the chart."
+    },
+    {
+      "id": "q14",
+      "core": true,
+      "topic": "Process variation",
+      "type": "scenario",
+      "scenario": "The tread-width process has been in statistical control for three months, but the capability index Cpk is 0.8.",
+      "prompt": "What does this mean?",
+      "options": [
+        "The process is stable and therefore capable; no action is needed",
+        "A Cpk of 0.8 means 80% of tyres are within specification",
+        "The process is out of control and the control chart must be wrong",
+        "The process is stable (predictable) but not capable of consistently meeting the specification, so it needs centring and/or variation reduction"
+      ],
+      "answer": 3,
+      "explanation": "Stability and capability are different questions. A stable process is predictable, but with Cpk below 1 it will predictably produce some product outside specification. Many organisations aim for Cpk of at least 1.33."
+    },
+    {
+      "id": "q15",
+      "core": false,
+      "topic": "Process variation",
+      "type": "mcq",
+      "prompt": "Variation that is inherent in a process and present all the time, arising from many small sources, is called:",
+      "options": [
+        "Special-cause variation",
+        "Common-cause variation",
+        "Specification variation",
+        "Assignable error"
+      ],
+      "answer": 1,
+      "explanation": "Common-cause variation is the built-in noise of a stable process. Reducing it requires changing the process (system), not reacting to individual points. Special causes are unusual, identifiable events."
+    },
+    {
+      "id": "q16",
+      "core": true,
+      "topic": "Cause-and-effect diagram",
+      "type": "mcq",
+      "prompt": "What is the main purpose of a cause-and-effect (Ishikawa) diagram?",
+      "options": [
+        "To prove which cause is the root cause",
+        "To organise potential causes of an effect into categories so the team can decide which ones to check with evidence",
+        "To rank defects by frequency",
+        "To track a process over time"
+      ],
+      "answer": 1,
+      "explanation": "The fishbone diagram structures brainstorming (Manpower, Machine, Method, Material, Measurement, Environment). Its causes are hypotheses until verified with data."
+    },
+    {
+      "id": "q17",
+      "core": true,
+      "topic": "5 Whys",
+      "type": "scenario",
+      "scenario": "During a 5 Whys session about a mislabelled tyre batch, someone answers a 'Why?' with: 'The operator was careless.'",
+      "prompt": "What is the best next step?",
+      "options": [
+        "Check the facts, and ask why the process allowed the error, for example an unclear standard or no error-proofing",
+        "Stop the analysis and discipline the operator",
+        "Write 'human error' as the root cause and close the report",
+        "Skip to a new problem because people issues cannot be solved"
+      ],
+      "answer": 0,
+      "explanation": "Blaming individuals stops learning. A good root cause analysis asks what in the system (methods, training, design, error-proofing) made the error possible, and checks the answer against evidence."
+    },
+    {
+      "id": "q18",
+      "core": true,
+      "topic": "5 Whys",
+      "type": "mcq",
+      "prompt": "Must a 5 Whys analysis always contain exactly five questions?",
+      "options": [
+        "Yes, exactly five, otherwise the analysis is invalid",
+        "No, one 'why' is always sufficient",
+        "No. Continue until you reach a cause that is supported by evidence and that you can act on; this may take fewer or more than five steps",
+        "Yes, and each answer must be a different department"
+      ],
+      "answer": 2,
+      "explanation": "'Five' is a rule of thumb. The chain should follow evidence, be revised when evidence contradicts it, and stop at a verified, actionable cause."
+    },
+    {
+      "id": "q19",
+      "core": false,
+      "topic": "Root cause analysis",
+      "type": "scenario",
+      "scenario": "The team suspects a worn curing bladder on Press 4 is causing blisters.",
+      "prompt": "Which action best verifies the suspected cause?",
+      "options": [
+        "Ask the most experienced operator whether they agree",
+        "Replace the bladder and compare blister rate and bladder pressure data before and after over a sufficient number of cycles, with other conditions unchanged",
+        "Add a second visual inspector at final inspection",
+        "Assume it is true because the fishbone diagram lists it under 'Machine'"
+      ],
+      "answer": 1,
+      "explanation": "Verification means testing the hypothesis with data: change the suspected cause while holding other factors steady and see whether the effect changes. Opinions and fishbone entries are not verification."
+    },
+    {
+      "id": "q20",
+      "core": true,
+      "topic": "PDCA",
+      "type": "mcq",
+      "prompt": "What happens in the CHECK stage of the PDCA cycle?",
+      "options": [
+        "The countermeasure is selected",
+        "The problem is defined for the first time",
+        "The change is made permanent in the standard procedures",
+        "Results are compared with the baseline and the target to judge whether the change worked"
+      ],
+      "answer": 3,
+      "explanation": "Plan defines the problem, baseline, target and countermeasure. Do trials it. Check compares results with the baseline and target. Act standardises, adjusts or abandons the change."
+    },
+    {
+      "id": "q21",
+      "core": true,
+      "topic": "PDCA",
+      "type": "scenario",
+      "scenario": "A trial reduced the blister rate on Press 4 from 6.2% to 0.6% over 1,200 tyres with no negative side effects detected.",
+      "prompt": "What is the appropriate ACT step?",
+      "options": [
+        "Reverse the change so that the original process is restored",
+        "Stop monitoring, because the problem is solved for good",
+        "Standardise the change (update procedures, PM schedules and training) and keep monitoring to sustain it",
+        "Start a completely new PDCA cycle on the same problem without changing anything"
+      ],
+      "answer": 2,
+      "explanation": "When a change is shown to work, ACT makes it the new standard and keeps checking that the gain holds. Then the team can look for the next improvement."
+    },
+    {
+      "id": "q22",
+      "core": true,
+      "topic": "Corrective action",
+      "type": "mcq",
+      "prompt": "Which of these is a CORRECTIVE action (eliminating the cause) rather than a correction or containment?",
+      "options": [
+        "Changing the maintenance system so curing bladders are replaced by cycle count, with deferral approval",
+        "Replacing the customer's affected tyres",
+        "Adding temporary 100% inspection of Press 4 output",
+        "Quarantining suspect tyres in the warehouse"
+      ],
+      "answer": 0,
+      "explanation": "Correction fixes the immediate nonconformity (replace tyres). Containment stops suspect product from moving on (quarantine, temporary 100% inspection). Corrective action removes the cause so it does not recur."
+    },
+    {
+      "id": "q23",
+      "core": true,
+      "topic": "Customer complaints",
+      "type": "scenario",
+      "scenario": "A distributor reports a bulge in the sidewall of a new tyre found during pre-fitment inspection.",
+      "prompt": "What is the appropriate first response?",
+      "options": [
+        "Tell the customer it was probably caused by misuse",
+        "Send a free replacement and close the complaint",
+        "Wait to see whether more customers complain before doing anything",
+        "Treat it as potentially safety-related: escalate and follow the approved safety, traceability and nonconformity procedures, including containment of suspect product"
+      ],
+      "answer": 3,
+      "explanation": "A sidewall bulge can indicate internal structural separation. Potentially safety-critical issues must be escalated and handled through the organisation's approved procedures, with traceability used to find and contain suspect product. Never make unsupported claims to the customer."
+    },
+    {
+      "id": "q24",
+      "core": true,
+      "topic": "Kaizen",
+      "type": "mcq",
+      "prompt": "Which statement best describes Kaizen?",
+      "options": [
+        "A large, one-off investment in new machinery",
+        "Continuous, incremental improvement that involves everyone, often through many small changes",
+        "A quality audit performed once a year",
+        "A method of replacing workers with automation"
+      ],
+      "answer": 1,
+      "explanation": "Kaizen means 'change for the better'. It relies on employee involvement and steady, small improvements that are standardised and built upon."
+    },
+    {
+      "id": "q25",
+      "core": true,
+      "topic": "Lean waste",
+      "type": "scenario",
+      "scenario": "A tyre builder repeatedly lifts 25 kg rolls of tread by hand from floor level to the servicer.",
+      "prompt": "Which Lean concept best describes this condition?",
+      "options": [
+        "Muri (overburden)",
+        "Mura (unevenness)",
+        "Muda (waste)",
+        "Kanban"
+      ],
+      "answer": 0,
+      "explanation": "Muri is overburden of people or equipment beyond reasonable capacity. It causes injury risk, fatigue and errors, and often leads to Muda (waste) and quality problems."
+    },
+    {
+      "id": "q26",
+      "core": false,
+      "topic": "Lean waste",
+      "type": "scenario",
+      "scenario": "Production volume is very low in the first week of each month and requires heavy overtime in the last week.",
+      "prompt": "Which Lean concept describes this pattern?",
+      "options": [
+        "Muri (overburden)",
+        "Muda of transport",
+        "Mura (unevenness)",
+        "Poka-yoke"
+      ],
+      "answer": 2,
+      "explanation": "Mura is unevenness in workload or flow. It creates periods of overburden (Muri) and waste (Muda), and the rush at month end often increases defects."
+    },
+    {
+      "id": "q27",
+      "core": false,
+      "topic": "Lean waste",
+      "type": "scenario",
+      "scenario": "An operator walks about 25 metres to fetch bead bundles for every tyre built.",
+      "prompt": "Which type of waste (Muda) is this?",
+      "options": [
+        "Overproduction",
+        "Unnecessary motion",
+        "Defects",
+        "Over-processing"
+      ],
+      "answer": 1,
+      "explanation": "Walking, reaching and searching that do not add value are motion waste. Point-of-use storage can remove most of it."
+    },
+    {
+      "id": "q28",
+      "core": false,
+      "topic": "7 QC tools",
+      "type": "mcq",
+      "prompt": "Blister rates seem to differ between curing presses. Which tool separates the data into groups such as press, shift and material batch to reveal such differences?",
+      "options": [
+        "Stratification",
+        "Histogram",
+        "Pareto chart",
+        "Control chart"
+      ],
+      "answer": 0,
+      "explanation": "Stratification divides data into meaningful groups. Patterns hidden in combined data often appear when the data are separated by machine, shift or material."
+    },
+    {
+      "id": "q29",
+      "core": false,
+      "topic": "Kaizen",
+      "type": "scenario",
+      "scenario": "A team removes the splice check from the building cell. Cycle time falls by 8%, but splice-open defects found at final inspection double.",
+      "prompt": "How should this change be evaluated?",
+      "options": [
+        "A success, because cycle time improved",
+        "Not a genuine improvement: it shifts the quality problem downstream and raises the cost of poor quality",
+        "A success, because final inspection still catches the defects",
+        "Neutral, because cycle time and defects cannot be compared"
+      ],
+      "answer": 1,
+      "explanation": "Improvements must be judged on the whole system. Moving a problem downstream adds rework, scrap and escape risk, so the net effect is negative."
+    },
+    {
+      "id": "q30",
+      "core": false,
+      "topic": "Employee involvement",
+      "type": "mcq",
+      "prompt": "Why does TQM emphasise involving operators in improvement work?",
+      "options": [
+        "Because it is required for decoration in reports",
+        "Because operators are responsible for all defects",
+        "Because managers should not be involved in quality",
+        "Because operators have direct process knowledge, and their ownership makes solutions better and more sustainable"
+      ],
+      "answer": 3,
+      "explanation": "People closest to the work see problems first and understand practical constraints. Involvement builds ownership, which is essential for sustaining standards."
+    },
+    {
+      "id": "q31",
+      "core": false,
+      "topic": "Standardisation",
+      "type": "mcq",
+      "prompt": "After a successful improvement, why is standardisation important?",
+      "options": [
+        "It prevents any further changes to the process",
+        "It is only needed for audits",
+        "It makes the improved method the new baseline, so the gains are sustained and future improvements can build on it",
+        "It replaces the need for training"
+      ],
+      "answer": 2,
+      "explanation": "Without a standard, processes drift back to old habits. A standard is the current best-known method, the foundation for the next improvement."
+    },
+    {
+      "id": "q32",
+      "core": true,
+      "topic": "Quality metrics",
+      "type": "mcq",
+      "prompt": "Final inspection checked 1,500 tyres last week and rejected 90. What is the rejection rate?",
+      "options": [
+        "1.5%",
+        "6.0%",
+        "9.0%",
+        "16.7%"
+      ],
+      "answer": 1,
+      "explanation": "Rejection rate = rejected units / inspected units x 100 = 90 / 1,500 x 100 = 6.0%."
+    },
+    {
+      "id": "q33",
+      "core": false,
+      "topic": "Quality metrics",
+      "type": "scenario",
+      "scenario": "1,000 tyres enter final inspection. 920 pass on the first attempt, 50 pass after rework and 30 are rejected.",
+      "prompt": "What is the first-pass yield (FPY)?",
+      "options": [
+        "92.0%",
+        "95.0%",
+        "97.0%",
+        "3.0%"
+      ],
+      "answer": 0,
+      "explanation": "FPY counts only units that pass first time without rework: 920 / 1,000 = 92.0%. The 97.0% figure (970 / 1,000) is final yield, which includes reworked units."
+    }
+  ]
+}
