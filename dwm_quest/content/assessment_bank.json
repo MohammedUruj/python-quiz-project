@@ -1,0 +1,187 @@
+{
+  "_comment": "Source of the certification assessment. 'answer' is the id of the correct option. The build script replaces it with a salted hash before anything is shipped to browsers. Keep this file out of any published artifact.",
+  "version": "DWM-A-2026.1",
+  "salt": "jk-dwm-quest-2026-a1",
+  "questions": [
+    {
+      "id": "q01", "area": "purpose", "scenario": false,
+      "text": "What is the main purpose of Daily Work Management (DWM)?",
+      "options": [
+        {"id": "a", "t": "To run routine work to standard every day, check results against targets and act on abnormalities, so performance is maintained and improved."},
+        {"id": "b", "t": "To produce daily reports for senior management."},
+        {"id": "c", "t": "To replace improvement projects with daily meetings."},
+        {"id": "d", "t": "To record operator mistakes for appraisal."}
+      ],
+      "answer": "a",
+      "explain": "DWM turns objectives and standards into routine execution, monitoring and corrective action."
+    },
+    {
+      "id": "q02", "area": "alignment", "scenario": true,
+      "text": "The plant objective is to improve on-time delivery. A curing supervisor asks how this affects their shift. What is the best answer?",
+      "options": [
+        {"id": "a", "t": "It doesn't; delivery is a dispatch department matter."},
+        {"id": "b", "t": "Through the MP/CP Tree the objective breaks down into measures such as shift output and press uptime, with targets on the MP Planning Sheet that the shift tracks and acts on."},
+        {"id": "c", "t": "The supervisor should work overtime whenever delivery is late."},
+        {"id": "d", "t": "Only the plant head needs to know the objective."}
+      ],
+      "answer": "b",
+      "explain": "Organisational objectives flow down into measures each role can control and review daily."
+    },
+    {
+      "id": "q03", "area": "roles", "scenario": false,
+      "text": "Which document defines a role's responsibilities, including the measures it must manage and review?",
+      "options": [
+        {"id": "a", "t": "Role Sheet"},
+        {"id": "b", "t": "Shift attendance register"},
+        {"id": "c", "t": "Customer complaint log"},
+        {"id": "d", "t": "Purchase order"}
+      ],
+      "answer": "a",
+      "explain": "The Role Sheet links the organisation structure to each role's duties and measures; standards define how the work is done."
+    },
+    {
+      "id": "q04", "area": "mpcp", "scenario": false,
+      "text": "What is the difference between the MP/CP Tree and the MP Planning Sheet?",
+      "options": [
+        {"id": "a", "t": "They are two names for the same document."},
+        {"id": "b", "t": "The Tree lists employees; the Planning Sheet lists machines."},
+        {"id": "c", "t": "The Tree shows how result measures (MPs) break down into the process measures (CPs) that drive them; the Planning Sheet sets each measure's target, frequency, method, data source, owner and response."},
+        {"id": "d", "t": "The Planning Sheet is only used for annual budgets."}
+      ],
+      "answer": "c",
+      "explain": "The Tree shows cause-and-effect logic; the Planning Sheet turns it into a routine."
+    },
+    {
+      "id": "q05", "area": "target", "scenario": true,
+      "text": "A new line is being set up. The manager proposes copying another line's output target 'because the lines look similar'. What should you advise?",
+      "options": [
+        {"id": "a", "t": "Accept it; consistency across lines matters most."},
+        {"id": "b", "t": "Set it 20% higher to create a stretch."},
+        {"id": "c", "t": "Let the first week's actual output become the target."},
+        {"id": "d", "t": "Derive the target from customer demand and the approved plan, and check it against this line's process capability and constraints."}
+      ],
+      "answer": "d",
+      "explain": "Targets must be aligned with demand and plans and be realistic for the specific process, not copied or arbitrary."
+    },
+    {
+      "id": "q06", "area": "frequency", "scenario": true,
+      "text": "Which measure most needs continuous or near-real-time monitoring with an alarm?",
+      "options": [
+        {"id": "a", "t": "Monthly training hours"},
+        {"id": "b", "t": "Curing platen temperature and pressure, which affect cure quality and safety"},
+        {"id": "c", "t": "Office stationery stock"},
+        {"id": "d", "t": "Weekly canteen feedback score"}
+      ],
+      "answer": "b",
+      "explain": "Frequency follows risk, speed of change, response time, customer and safety impact, and the control plan."
+    },
+    {
+      "id": "q07", "area": "monitoring", "scenario": true,
+      "text": "Plan is 1,000 tyres per 8-hour shift (125/h). At the 6-hour checkpoint the actual is 570. What is the correct reading?",
+      "options": [
+        {"id": "a", "t": "On track, because 2 hours remain."},
+        {"id": "b", "t": "Ahead of plan."},
+        {"id": "c", "t": "180 tyres behind the expected 750, so verify and act within the shift."},
+        {"id": "d", "t": "No conclusion is possible until the shift ends."}
+      ],
+      "answer": "c",
+      "explain": "Compare the actual with the expected-to-date figure at each checkpoint to act early."
+    },
+    {
+      "id": "q08", "area": "station", "scenario": true,
+      "text": "At the DWM station a team member suggests lowering today's target because the line is behind. What should the reviewer say?",
+      "options": [
+        {"id": "a", "t": "No. The target stays as approved; we record the gap, find out why and act. Targets change only through the approved planning process."},
+        {"id": "b", "t": "Yes, it keeps morale high."},
+        {"id": "c", "t": "Yes, but only on the board, not in the system."},
+        {"id": "d", "t": "Remove the target from the board for today."}
+      ],
+      "answer": "a",
+      "explain": "Changing a target to make actual performance look acceptable hides problems."
+    },
+    {
+      "id": "q09", "area": "abnormality", "scenario": true,
+      "text": "Which is the best abnormality record entry?",
+      "options": [
+        {"id": "a", "t": "Press problem again, operator careless."},
+        {"id": "b", "t": "Line 2 CP-04, Shift A 06:52–11:40: 5 stops, alarm 'platen steam pressure low', 46 min lost, 48 tyres on hold. Evidence: PLC log, hold tag QH-0412."},
+        {"id": "c", "t": "Many stops today."},
+        {"id": "d", "t": "Boiler issue suspected; no action needed."}
+      ],
+      "answer": "b",
+      "explain": "Record what, where, when and how big, with evidence, and no blame or unverified cause."
+    },
+    {
+      "id": "q10", "area": "containment", "scenario": true,
+      "text": "Green tyres from one building drum are found underweight at the 18:00 check; 17:00 was in spec. What is the right containment?",
+      "options": [
+        {"id": "a", "t": "Send them on; final inspection will catch defects."},
+        {"id": "b", "t": "Hold only the two tyres that were checked."},
+        {"id": "c", "t": "Segregate and tag all tyres from that drum since the last good check, and inform Quality per the hold procedure."},
+        {"id": "d", "t": "Scrap the entire day's production immediately."}
+      ],
+      "answer": "c",
+      "explain": "Containment covers all potentially affected product back to the last good check; release is by Quality."
+    },
+    {
+      "id": "q11", "area": "whywhy", "scenario": true,
+      "text": "In a Why-Why Analysis, when should the team stop asking 'why'?",
+      "options": [
+        {"id": "a", "t": "After exactly five whys."},
+        {"id": "b", "t": "When someone to blame has been identified."},
+        {"id": "c", "t": "After the first answer, to save time."},
+        {"id": "d", "t": "When an evidence-supported, controllable cause is reached that explains all the facts, and it can be verified."}
+      ],
+      "answer": "d",
+      "explain": "There is no fixed number of whys; each step needs evidence, and blame is not a root cause."
+    },
+    {
+      "id": "q12", "area": "rca", "scenario": true,
+      "text": "A press stops repeatedly; each reset restores production but the stops return. Which is a corrective action?",
+      "options": [
+        {"id": "a", "t": "Reset the press faster each time."},
+        {"id": "b", "t": "Revise the PM standard to include the inspection whose absence caused the strainer blockage (the verified root cause)."},
+        {"id": "c", "t": "Hold the tyres cured during the stops."},
+        {"id": "d", "t": "Clean the strainer once."}
+      ],
+      "answer": "b",
+      "explain": "Correction restores, containment limits impact, and corrective action removes the verified root cause."
+    },
+    {
+      "id": "q13", "area": "standards", "scenario": false,
+      "text": "After a standard is revised because of a verified root cause, what must follow?",
+      "options": [
+        {"id": "a", "t": "Nothing; the new document is on the server."},
+        {"id": "b", "t": "Email it to the plant head only."},
+        {"id": "c", "t": "Issue it under document control, withdraw old copies, train the affected team and verify it is followed."},
+        {"id": "d", "t": "Wait for the annual audit to check it."}
+      ],
+      "answer": "c",
+      "explain": "A revised standard changes practice only when it is controlled, trained on and verified."
+    },
+    {
+      "id": "q14", "area": "horizontal", "scenario": true,
+      "text": "A countermeasure worked on one steam-heated press. Another line has electrically heated presses with no steam strainer. What should happen?",
+      "options": [
+        {"id": "a", "t": "Don't deploy it there; the failure mechanism doesn't exist. Deploy to presses with the same mechanism, and assess similar-but-different equipment first."},
+        {"id": "b", "t": "Copy the countermeasure to every press in the plant."},
+        {"id": "c", "t": "Never share countermeasures outside the original press."},
+        {"id": "d", "t": "Deploy everywhere without checking, then fix problems later."}
+      ],
+      "answer": "a",
+      "explain": "Horizontal deployment checks applicability and local conditions before deploying."
+    },
+    {
+      "id": "q15", "area": "effectiveness", "scenario": true,
+      "text": "All actions for a recurring problem show 'Closed' in the tracker. How is effectiveness verified?",
+      "options": [
+        {"id": "a", "t": "The 'Closed' status proves it."},
+        {"id": "b", "t": "The action owner confirms verbally."},
+        {"id": "c", "t": "Compare recurrence data for the original problem measure over a defined period (e.g. stops per shift before vs after) and confirm the actions were implemented."},
+        {"id": "d", "t": "Ask whether anyone has complained recently."}
+      ],
+      "answer": "c",
+      "explain": "Marking an action complete does not prove effectiveness; data on the original problem does."
+    }
+  ]
+}

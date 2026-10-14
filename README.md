@@ -1,5 +1,7 @@
 # TQM Tyre Factory Simulator: The Quality Champion Challenge
 
+> Also in this repository: **[DWM QUEST: The Daily Excellence Challenge](dwm_quest/README.md)**, a Daily Work Management learning game and assessment (`dwm_quest/`).
+
 An interactive, gamified **Total Quality Management (TQM)** training game set in a fictional tyre factory.
 Players join *Qualitrax Tyres* as a new **Quality Improvement Engineer**, walk a 2D factory floor, interview
 workers, inspect tyres, collect evidence, analyse data with the 7 QC tools, find and verify root causes,

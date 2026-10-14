@@ -1,0 +1,2710 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>DWM Quest</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="DWM QUEST: The Daily Excellence Challenge, an interactive Daily Work Management learning game and assessment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a control-room shell — navy top bar, one working column, boards drawn like shop-floor display panels. */
+:root {
+  --bg: #eef1f5;          /* steel-tinted paper */
+  --surface: #ffffff;
+  --surface-2: #f5f7fa;
+  --line: #d3d9e2;
+  --fg: #142033;
+  --muted: #56647a;
+  --navy: #13284a;        /* brand primary */
+  --navy-fg: #ffffff;
+  --steel: #6f7d92;
+  --accent: #c98a12;      /* restrained safety amber */
+  --accent-soft: #fbf1dc;
+  --ok: #1f7a4d;  --ok-soft: #e3f3ea;
+  --warn: #a8640a; --warn-soft: #fcefd9;
+  --bad: #b3261e; --bad-soft: #fbe5e3;
+  --info: #1d5fa8; --info-soft: #e3eefb;
+  --board: #0f1d33;       /* DWM board face */
+  --board-fg: #e8eef7;
+  --board-line: #2a3d5c;
+  --focus: #2f7de1;
+  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --r: 6px;
+  --shadow: 0 1px 2px rgba(16, 32, 60, .08), 0 4px 14px rgba(16, 32, 60, .06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1424; --surface: #12203a; --surface-2: #172846; --line: #29395a;
+    --fg: #e6ecf5; --muted: #9eadc4; --navy: #0a1730; --navy-fg: #f2f5fa; --steel: #8d9bb2;
+    --accent: #e3a73a; --accent-soft: #3a2c10;
+    --ok: #5cc28f; --ok-soft: #12321f; --warn: #e3a73a; --warn-soft: #382a10;
+    --bad: #f07d74; --bad-soft: #3d1715; --info: #7db2f0; --info-soft: #132c4d;
+    --board: #08111f; --board-fg: #e8eef7; --board-line: #2a3d5c; --focus: #7db2f0;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1424; --surface: #12203a; --surface-2: #172846; --line: #29395a;
+  --fg: #e6ecf5; --muted: #9eadc4; --navy: #0a1730; --navy-fg: #f2f5fa; --steel: #8d9bb2;
+  --accent: #e3a73a; --accent-soft: #3a2c10;
+  --ok: #5cc28f; --ok-soft: #12321f; --warn: #e3a73a; --warn-soft: #382a10;
+  --bad: #f07d74; --bad-soft: #3d1715; --info: #7db2f0; --info-soft: #132c4d;
+  --board: #08111f; --board-fg: #e8eef7; --board-line: #2a3d5c; --focus: #7db2f0;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: .01em; line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
+p { margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main:focus { outline: none; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.label { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .09em; font-size: .8rem; color: var(--muted); font-weight: 600; }
+.muted { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--navy); color: var(--navy-fg); }
+.topbar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.brand b { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: .04em; }
+.brand span { font-size: .78rem; opacity: .75; }
+.topbar .spacer { flex: 1; }
+.save-pill { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; padding: 3px 10px; border-radius: 99px; background: rgba(255,255,255,.1); white-space: nowrap; }
+.save-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #9fb0c8; }
+.save-pill[data-state="saved"] .dot { background: #5cc28f; }
+.save-pill[data-state="saving"] .dot { background: #e3a73a; animation: pulse 1s infinite; }
+.save-pill[data-state="offline"] .dot { background: #e3a73a; }
+.save-pill[data-state="error"] .dot { background: #f07d74; }
+.save-pill button { background: #fff; color: #13284a; border: 0; border-radius: 99px; padding: 0 8px; cursor: pointer; font-size: .75rem; }
+@keyframes pulse { 50% { opacity: .35; } }
+.tb-btn { background: transparent; border: 1px solid rgba(255,255,255,.35); color: var(--navy-fg); border-radius: var(--r); padding: 4px 10px; cursor: pointer; font-size: .85rem; }
+.tb-btn:hover { background: rgba(255,255,255,.12); }
+
+.mode-banner { background: var(--warn-soft); color: var(--fg); border-bottom: 1px solid var(--line); font-size: .85rem; }
+.mode-banner > div { max-width: 1100px; margin: 0 auto; padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mode-banner.central { background: var(--info-soft); }
+
+main#app { max-width: 1100px; margin: 0 auto; padding-block: 24px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; min-width: 0; }
+.panel.flat { box-shadow: none; }
+
+/* ---------- buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--r); border: 1px solid var(--line);
+  background: var(--surface); padding: 9px 16px; cursor: pointer; font-weight: 500; min-height: 42px; text-align: left; }
+.btn:hover { border-color: var(--steel); }
+.btn.primary { background: var(--navy); color: var(--navy-fg); border-color: var(--navy); }
+:root[data-theme="dark"] .btn.primary { background: var(--info); color: #0b1424; border-color: var(--info); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { background: var(--info); color: #0b1424; border-color: var(--info); } }
+.btn.primary:hover { filter: brightness(1.12); }
+.btn.accent { background: var(--accent); color: #1a1205; border-color: var(--accent); font-weight: 600; }
+.btn.ghost { background: transparent; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.small { min-height: 32px; padding: 4px 10px; font-size: .85rem; }
+
+/* ---------- welcome ---------- */
+.hero { background: var(--navy); color: var(--navy-fg); border-radius: var(--r); overflow: hidden; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.hero-copy { padding: 32px; display: flex; flex-direction: column; gap: 14px; }
+.hero-copy .label { color: #c2cee0; }
+.hero-copy .tagline { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: .02em; color: #f2d48a; line-height: 1.35; }
+.hero-art { background: #0c1a31; min-height: 220px; position: relative; }
+.hero-art { display: flex; align-items: center; }
+.hero-art canvas { width: 100%; height: auto; max-width: 100%; display: block; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } .hero-copy { padding: 22px; } }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.flow > div { border-top: 4px solid var(--steel); background: var(--surface); border-radius: 0 0 var(--r) var(--r); padding: 12px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.flow > div:nth-child(1) { border-top-color: var(--info); }
+.flow > div:nth-child(2) { border-top-color: var(--ok); }
+.flow > div:nth-child(3) { border-top-color: var(--accent); }
+.flow > div:nth-child(4) { border-top-color: var(--bad); }
+.flow h3 { font-size: 1.1rem; margin-bottom: 4px; }
+.flow ul { margin: 0; padding-left: 18px; font-size: .86rem; color: var(--muted); }
+@media (max-width: 760px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- forms ---------- */
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field input, .field select { border: 1px solid var(--line); border-radius: var(--r); padding: 9px 11px; background: var(--surface); min-height: 42px; }
+.field .err { color: var(--bad); font-size: .82rem; min-height: 1em; }
+select { border: 1px solid var(--line); border-radius: var(--r); padding: 7px 9px; background: var(--surface); max-width: 100%; }
+
+/* ---------- hub ---------- */
+.progress { height: 10px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--ok); }
+.missions { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.mcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.mcard .num { font-family: var(--font-display); font-size: 2.2rem; color: var(--steel); line-height: 1; }
+.mcard header { display: flex; gap: 12px; align-items: flex-start; }
+.mcard .phase { font-size: .72rem; }
+.mcard p { color: var(--muted); font-size: .9rem; flex: 1; }
+.mcard[data-status="locked"] { opacity: .62; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; padding: 2px 9px; border-radius: 99px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); white-space: nowrap; }
+.chip.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.chip.info { background: var(--info-soft); color: var(--info); border-color: transparent; }
+
+/* ---------- mission ---------- */
+.mission-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.steps { display: flex; gap: 4px; flex-wrap: wrap; }
+.steps i { width: 22px; height: 6px; border-radius: 3px; background: var(--line); }
+.steps i.done { background: var(--ok); }
+.steps i.cur { background: var(--accent); }
+.dialogue { display: flex; gap: 14px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; }
+.dialogue .who { font-weight: 600; }
+.dialogue .role { font-size: .8rem; color: var(--muted); }
+.dialogue .say { margin-top: 4px; max-width: 70ch; }
+.portrait { width: 64px; height: 64px; flex: none; border-radius: 50%; overflow: hidden; background: var(--surface-2); }
+.portrait svg { width: 100%; height: 100%; display: block; }
+@media (prefers-reduced-motion: no-preference) { .dialogue { animation: rise .35s ease-out; } }
+@keyframes rise { from { transform: translateY(6px); opacity: .4; } to { transform: none; opacity: 1; } }
+
+.prompt { font-weight: 600; font-size: 1.05rem; max-width: 75ch; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; gap: 10px; align-items: flex-start; text-align: left; width: 100%; border: 1px solid var(--line); border-radius: var(--r); padding: 11px 13px; background: var(--surface); cursor: pointer; }
+.opt:hover { border-color: var(--steel); }
+.opt[aria-pressed="true"], .opt[aria-checked="true"] { border-color: var(--info); background: var(--info-soft); }
+.opt.correct { border-color: var(--ok); background: var(--ok-soft); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt .key { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); min-width: 1.4em; padding-top: 2px; }
+.feedback { border-left: 4px solid var(--steel); background: var(--surface-2); padding: 12px 14px; border-radius: 0 var(--r) var(--r) 0; max-width: 80ch; }
+.feedback.ok { border-left-color: var(--ok); background: var(--ok-soft); }
+.feedback.bad { border-left-color: var(--bad); background: var(--bad-soft); }
+.feedback.note { border-left-color: var(--accent); background: var(--accent-soft); }
+.feedback b { display: block; margin-bottom: 2px; }
+.hint { font-size: .9rem; }
+details.hint summary { cursor: pointer; color: var(--info); }
+
+.classify { display: flex; flex-direction: column; gap: 8px; }
+.citem { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; background: var(--surface); }
+.citem.correct { border-color: var(--ok); }
+.citem.wrong { border-color: var(--bad); }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+.seg button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 4px; padding: 5px 9px; cursor: pointer; font-size: .82rem; }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--navy-fg); border-color: var(--navy); }
+@media (max-width: 640px) { .citem { grid-template-columns: 1fr; } .seg { justify-content: flex-start; } }
+
+.seq { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.seq ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; counter-reset: s; }
+.seq ol li { counter-increment: s; display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: var(--r); padding: 8px 10px; background: var(--surface); }
+.seq ol li::before { content: counter(s); font-family: var(--font-mono); color: var(--muted); min-width: 1.3em; }
+.seq ol li.correct { border-color: var(--ok); }
+.seq ol li.wrong { border-color: var(--bad); }
+.seq ol li span { flex: 1; }
+.seq .pool { display: flex; flex-direction: column; gap: 6px; }
+.slot-empty { border: 1px dashed var(--line); border-radius: var(--r); padding: 8px 10px; color: var(--muted); font-size: .88rem; }
+
+.chain { display: flex; flex-direction: column; gap: 0; }
+.chain .link { display: flex; align-items: center; gap: 10px; }
+.chain .arrow { margin-left: 22px; height: 16px; border-left: 2px solid var(--steel); }
+
+/* ---------- data tables & boards ---------- */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; color: var(--muted); background: var(--surface-2); white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+tr:last-child td { border-bottom: 0; }
+tr.flag td { background: var(--bad-soft); }
+
+.board { background: var(--board); color: var(--board-fg); border-radius: var(--r); padding: 14px; border: 6px solid #3a475c; }
+.board-title { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; border-bottom: 1px solid var(--board-line); padding-bottom: 8px; margin-bottom: 12px; }
+.board-title b { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: .06em; }
+.sim { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; border: 1px solid #e3a73a; color: #f2c46b; padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+.hotspots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 820px) { .hotspots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hs { position: relative; text-align: left; background: #14243f; color: var(--board-fg); border: 1px solid var(--board-line); border-radius: 5px; padding: 10px; cursor: pointer; min-height: 92px; display: flex; flex-direction: column; gap: 4px; }
+.hs:hover { border-color: #7db2f0; }
+.hs .tag { font-family: var(--font-mono); font-size: .72rem; color: #9fb4d4; }
+.hs .t { font-family: var(--font-display); font-size: 1.02rem; letter-spacing: .03em; }
+.hs .v { font-family: var(--font-mono); font-size: .82rem; color: #c8d5ea; }
+.hs.seen::after { content: "✓ reviewed"; position: absolute; top: 8px; right: 8px; font-size: .68rem; color: #5cc28f; font-family: var(--font-mono); }
+.hs.alert { border-color: #f07d74; }
+.hs.alert .v { color: #ffb1aa; }
+.hs.req { box-shadow: 0 0 0 2px #e3a73a; }
+@media (prefers-reduced-motion: no-preference) { .hs.req { animation: glow 1.6s ease-in-out infinite; } }
+@keyframes glow { 50% { box-shadow: 0 0 0 4px rgba(227, 167, 58, .35); } }
+.board-detail { margin-top: 12px; background: #0b172b; border: 1px solid var(--board-line); border-radius: 5px; padding: 12px; }
+.board-detail table { color: var(--board-fg); }
+.board-detail th { background: #12223c; color: #9fb4d4; }
+.board-detail th, .board-detail td { border-bottom-color: var(--board-line); }
+.board-detail tr.flag td { background: #3d1715; }
+.board-detail .tablewrap { background: transparent; border-color: var(--board-line); }
+.bad-t { color: #ffb1aa; }
+.ok-t { color: #8fe0b4; }
+.bars { display: flex; flex-direction: column; gap: 6px; }
+
+.checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: .88rem; }
+.checklist li { display: flex; gap: 8px; align-items: baseline; }
+.checklist li::before { content: "○"; color: var(--muted); }
+.checklist li.done::before { content: "●"; color: var(--ok); }
+.checklist li.cur { font-weight: 600; }
+.checklist li.cur::before { content: "▶"; color: var(--accent); }
+
+/* ---------- factory scene ---------- */
+.scene-wrap { position: relative; background: #1b2638; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
+.scene-wrap canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: pointer; }
+.scene-hud { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 10px; background: #111b2b; }
+.scene-tip { background: rgba(8, 17, 31, .82); color: #e8eef7; padding: 6px 10px; border-radius: 5px; font-size: .85rem; max-width: 60ch; }
+.dpad { display: grid; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(2, 40px); gap: 4px; }
+.dpad button { background: rgba(8, 17, 31, .8); color: #fff; border: 1px solid #415372; border-radius: 6px; cursor: pointer; }
+
+/* ---------- assessment ---------- */
+.qnav { display: flex; gap: 4px; flex-wrap: wrap; }
+.qnav button { width: 34px; height: 34px; border-radius: 5px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-family: var(--font-mono); font-size: .82rem; }
+.qnav button.answered { background: var(--info-soft); border-color: var(--info); }
+.qnav button.cur { outline: 2px solid var(--accent); }
+.scoreband { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+.bignum { font-family: var(--font-display); font-size: 4rem; line-height: 1; }
+.verdict { font-family: var(--font-display); font-size: 1.6rem; }
+
+/* ---------- admin ---------- */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; }
+.kpi b { display: block; font-family: var(--font-display); font-size: 2rem; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px; align-items: end; }
+.filters .field input, .filters .field select { min-height: 36px; padding: 6px 8px; }
+table.results tbody tr { cursor: pointer; }
+table.results tbody tr:hover td { background: var(--surface-2); }
+
+/* ---------- toast / modal ---------- */
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: var(--r); z-index: 50; max-width: calc(100% - 32px); font-size: .9rem; }
+.modal-back { position: fixed; inset: 0; background: rgba(6, 12, 24, .55); z-index: 40; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: var(--surface); border-radius: var(--r); max-width: 520px; width: 100%; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 90vh; overflow: auto; }
+
+.footer-note { font-size: .78rem; color: var(--muted); margin-top: 28px; border-top: 1px solid var(--line); padding-top: 12px; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+.station-grid { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 760px) { .station-grid { grid-template-columns: 1fr; } }
+
+</style>
+<a class="sr-only" href="#app">Skip to content</a>
+<main id="app" tabindex="-1"><p>Loading DWM QUEST…</p></main>
+<noscript><p style="padding:16px">DWM QUEST needs JavaScript enabled.</p></noscript>
+<script>
+// ---- config.js ----
+// DWM QUEST configuration. Edit these values, then run `python dwm_quest/build.py`.
+window.DWM = window.DWM || {};
+DWM.CONFIG = Object.freeze({
+  gameName: "DWM QUEST: The Daily Excellence Challenge",
+  organization: "JK Tyre & Industries Ltd.",
+  tagline: "Set the Target. Review the Board. Spot the Abnormality. Solve the Cause. Standardize the Improvement.",
+  // Neutral prototype identity: official JK Tyre logos/branding are NOT used until authorised assets are supplied.
+  brandingAuthorised: false,
+
+  // Owner of the results dashboard.
+  // In claude.ai Artifact mode the owner is enforced by the platform: only the account that owns the
+  // published artifact passes isOwner() and the database rule read:"owner". This email is shown for
+  // reference only and grants nothing. Replace it with the commissioning user's verified address.
+  ownerContactEmail: "tqmcell@jkmail.com",
+
+  // Assessment policy
+  assessmentVersion: "DWM-A-2026.1",
+  questionCount: 15,
+  passPercent: 80,            // 12/15 = 80% passes, 11/15 = 73.3% fails
+  maxAttempts: 3,             // 0 = unlimited
+  requireAllMissions: true,   // eligibility also needs all 6 mandatory missions completed
+  shuffleOptions: true,
+
+  // Allowed company e-mail domains for registration (lower case), e.g. ["jkmail.com"].
+  // Empty array = any well-formed address. JK Tyre's TQM cell must confirm the real domain list before rollout.
+  allowedEmailDomains: [],
+
+  displayTimeZone: undefined, // undefined = viewer's local time zone; e.g. "Asia/Kolkata"
+  periodicSaveSeconds: 60,
+});
+
+// ---- logic.js ----
+// Pure logic: hashing, scoring, eligibility, progress and CSV. No DOM access, so tests can load it in Node.
+(function (root) {
+  const DWM = (root.DWM = root.DWM || {});
+
+  const MISSION_IDS = ["m1", "m2", "m3", "m4", "m5", "m6"];
+  const SCHEMA_VERSION = 1;
+
+  // cyrb53: small non-cryptographic hash. Answer keys are stored as hashes so they are not readable
+  // in the page source. This deters casual inspection only; see README "Assessment integrity".
+  function hash(str, seed = 0) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+  }
+  const answerKey = (salt, qid, optionId) => hash(`${salt}|${qid}|${optionId}`, 7);
+
+  function newState() {
+    const missions = {};
+    MISSION_IDS.forEach((id, i) => {
+      missions[id] = { status: i === 0 ? "available" : "locked", step: 0, answers: {}, tries: {}, points: 0, completedAt: null };
+    });
+    return { schemaVersion: SCHEMA_VERSION, missions, checkpoint: { screen: "hub", label: "Mission Hub" }, assessment: null };
+  }
+
+  // Forward-compatible merge: missions added in later versions appear without breaking saved progress.
+  function migrateState(saved) {
+    const base = newState();
+    if (!saved || typeof saved !== "object") return base;
+    const out = { ...base, ...saved, missions: { ...base.missions } };
+    MISSION_IDS.forEach((id) => {
+      if (saved.missions && saved.missions[id]) out.missions[id] = { ...base.missions[id], ...saved.missions[id] };
+    });
+    unlockMissions(out);
+    out.schemaVersion = SCHEMA_VERSION;
+    return out;
+  }
+
+  function unlockMissions(state) {
+    MISSION_IDS.forEach((id, i) => {
+      const m = state.missions[id];
+      if (m.status === "locked" && (i === 0 || state.missions[MISSION_IDS[i - 1]].status === "completed")) m.status = "available";
+    });
+    return state;
+  }
+
+  const missionsCompleted = (state) => MISSION_IDS.filter((id) => state.missions[id].status === "completed");
+  const allMissionsDone = (state) => missionsCompleted(state).length === MISSION_IDS.length;
+  const totalPoints = (state) => MISSION_IDS.reduce((s, id) => s + (state.missions[id].points || 0), 0);
+
+  // Progress: six missions + one submitted assessment = seven mandatory activities.
+  function progressPct(state, attemptsCount) {
+    const done = missionsCompleted(state).length + (attemptsCount > 0 ? 1 : 0);
+    return Math.round((done / (MISSION_IDS.length + 1)) * 100);
+  }
+
+  function currentMission(state) {
+    if (allMissionsDone(state)) return "Assessment";
+    const m = MISSION_IDS.find((id) => state.missions[id].status !== "completed");
+    return m ? "Mission " + m.slice(1) : "Assessment";
+  }
+
+  // questions: [{id, area, key, options:[{id}]}]; answers: {qid: optionId}
+  function scoreAttempt(questions, answers, salt) {
+    let correct = 0;
+    const wrongAreas = new Set();
+    const perQuestion = questions.map((q) => {
+      const chosen = answers[q.id];
+      const ok = chosen != null && answerKey(salt, q.id, chosen) === q.key;
+      if (ok) correct++; else wrongAreas.add(q.area);
+      return { id: q.id, chosen: chosen ?? null, correct: ok };
+    });
+    const total = questions.length;
+    const scorePct = total ? Math.round((correct / total) * 1000) / 10 : 0;
+    return { correct, incorrect: total - correct, total, scorePct, perQuestion, wrongAreas: [...wrongAreas] };
+  }
+
+  function isPass(scorePct, passPercent) { return scorePct + 1e-9 >= passPercent; }
+
+  function eligibility({ scorePct, passPercent, missionsDone, requireAllMissions }) {
+    const passed = scorePct != null && isPass(scorePct, passPercent);
+    const eligible = passed && (!requireAllMissions || missionsDone);
+    return { passed, eligible };
+  }
+
+  function attemptsAllowed(maxAttempts, used) { return !maxAttempts || used < maxAttempts; }
+
+  function validEmail(email, domains) {
+    const e = String(email || "").trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)) return false;
+    if (domains && domains.length) return domains.includes(e.split("@")[1]);
+    return true;
+  }
+  const validEmployeeId = (id) => /^[A-Za-z0-9][A-Za-z0-9\-_/]{1,19}$/.test(String(id || "").trim());
+  const validName = (n) => { const s = String(n || "").trim(); return s.length >= 2 && s.length <= 80; };
+
+  function csvCell(v) {
+    if (v == null) return "";
+    let s = String(v);
+    // Neutralise spreadsheet formula injection from user-entered text.
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function toCSV(headers, rows) {
+    // BOM so Excel opens UTF-8 correctly.
+    return "﻿" + [headers, ...rows].map((r) => r.map(csvCell).join(",")).join("\r\n") + "\r\n";
+  }
+
+  function shuffle(arr, rnd = Math.random) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+
+  function newId(prefix) {
+    const r = (root.crypto && root.crypto.getRandomValues) ? Array.from(root.crypto.getRandomValues(new Uint8Array(8)), (b) => b.toString(16).padStart(2, "0")).join("") : Math.random().toString(16).slice(2, 18);
+    return `${prefix}-${Date.now().toString(36)}-${r}`;
+  }
+
+  DWM.logic = { MISSION_IDS, SCHEMA_VERSION, hash, answerKey, newState, migrateState, unlockMissions, missionsCompleted,
+    allMissionsDone, totalPoints, progressPct, currentMission, scoreAttempt, isPass, eligibility, attemptsAllowed,
+    validEmail, validEmployeeId, validName, csvCell, toCSV, shuffle, newId };
+})(typeof window !== "undefined" ? window : globalThis);
+
+// ---- questions.gen.js ----
+// GENERATED by build.py from content/assessment_bank.json. Do not edit.
+window.DWM = window.DWM || {};
+DWM.QUESTION_BANK = {
+ "version": "DWM-A-2026.1",
+ "salt": "jk-dwm-quest-2026-a1",
+ "questions": [
+  {
+   "id": "q01",
+   "area": "purpose",
+   "scenario": false,
+   "text": "What is the main purpose of Daily Work Management (DWM)?",
+   "options": [
+    {
+     "id": "a",
+     "t": "To run routine work to standard every day, check results against targets and act on abnormalities, so performance is maintained and improved."
+    },
+    {
+     "id": "b",
+     "t": "To produce daily reports for senior management."
+    },
+    {
+     "id": "c",
+     "t": "To replace improvement projects with daily meetings."
+    },
+    {
+     "id": "d",
+     "t": "To record operator mistakes for appraisal."
+    }
+   ],
+   "explain": "DWM turns objectives and standards into routine execution, monitoring and corrective action.",
+   "key": "12vh1p6omld"
+  },
+  {
+   "id": "q02",
+   "area": "alignment",
+   "scenario": true,
+   "text": "The plant objective is to improve on-time delivery. A curing supervisor asks how this affects their shift. What is the best answer?",
+   "options": [
+    {
+     "id": "a",
+     "t": "It doesn't; delivery is a dispatch department matter."
+    },
+    {
+     "id": "b",
+     "t": "Through the MP/CP Tree the objective breaks down into measures such as shift output and press uptime, with targets on the MP Planning Sheet that the shift tracks and acts on."
+    },
+    {
+     "id": "c",
+     "t": "The supervisor should work overtime whenever delivery is late."
+    },
+    {
+     "id": "d",
+     "t": "Only the plant head needs to know the objective."
+    }
+   ],
+   "explain": "Organisational objectives flow down into measures each role can control and review daily.",
+   "key": "1jrmbpjdp11"
+  },
+  {
+   "id": "q03",
+   "area": "roles",
+   "scenario": false,
+   "text": "Which document defines a role's responsibilities, including the measures it must manage and review?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Role Sheet"
+    },
+    {
+     "id": "b",
+     "t": "Shift attendance register"
+    },
+    {
+     "id": "c",
+     "t": "Customer complaint log"
+    },
+    {
+     "id": "d",
+     "t": "Purchase order"
+    }
+   ],
+   "explain": "The Role Sheet links the organisation structure to each role's duties and measures; standards define how the work is done.",
+   "key": "1oq3684rf3y"
+  },
+  {
+   "id": "q04",
+   "area": "mpcp",
+   "scenario": false,
+   "text": "What is the difference between the MP/CP Tree and the MP Planning Sheet?",
+   "options": [
+    {
+     "id": "a",
+     "t": "They are two names for the same document."
+    },
+    {
+     "id": "b",
+     "t": "The Tree lists employees; the Planning Sheet lists machines."
+    },
+    {
+     "id": "c",
+     "t": "The Tree shows how result measures (MPs) break down into the process measures (CPs) that drive them; the Planning Sheet sets each measure's target, frequency, method, data source, owner and response."
+    },
+    {
+     "id": "d",
+     "t": "The Planning Sheet is only used for annual budgets."
+    }
+   ],
+   "explain": "The Tree shows cause-and-effect logic; the Planning Sheet turns it into a routine.",
+   "key": "51zr4d4o17"
+  },
+  {
+   "id": "q05",
+   "area": "target",
+   "scenario": true,
+   "text": "A new line is being set up. The manager proposes copying another line's output target 'because the lines look similar'. What should you advise?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Accept it; consistency across lines matters most."
+    },
+    {
+     "id": "b",
+     "t": "Set it 20% higher to create a stretch."
+    },
+    {
+     "id": "c",
+     "t": "Let the first week's actual output become the target."
+    },
+    {
+     "id": "d",
+     "t": "Derive the target from customer demand and the approved plan, and check it against this line's process capability and constraints."
+    }
+   ],
+   "explain": "Targets must be aligned with demand and plans and be realistic for the specific process, not copied or arbitrary.",
+   "key": "26il3y8zft0"
+  },
+  {
+   "id": "q06",
+   "area": "frequency",
+   "scenario": true,
+   "text": "Which measure most needs continuous or near-real-time monitoring with an alarm?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Monthly training hours"
+    },
+    {
+     "id": "b",
+     "t": "Curing platen temperature and pressure, which affect cure quality and safety"
+    },
+    {
+     "id": "c",
+     "t": "Office stationery stock"
+    },
+    {
+     "id": "d",
+     "t": "Weekly canteen feedback score"
+    }
+   ],
+   "explain": "Frequency follows risk, speed of change, response time, customer and safety impact, and the control plan.",
+   "key": "8ft9o3t03u"
+  },
+  {
+   "id": "q07",
+   "area": "monitoring",
+   "scenario": true,
+   "text": "Plan is 1,000 tyres per 8-hour shift (125/h). At the 6-hour checkpoint the actual is 570. What is the correct reading?",
+   "options": [
+    {
+     "id": "a",
+     "t": "On track, because 2 hours remain."
+    },
+    {
+     "id": "b",
+     "t": "Ahead of plan."
+    },
+    {
+     "id": "c",
+     "t": "180 tyres behind the expected 750, so verify and act within the shift."
+    },
+    {
+     "id": "d",
+     "t": "No conclusion is possible until the shift ends."
+    }
+   ],
+   "explain": "Compare the actual with the expected-to-date figure at each checkpoint to act early.",
+   "key": "1f1hcbfh720"
+  },
+  {
+   "id": "q08",
+   "area": "station",
+   "scenario": true,
+   "text": "At the DWM station a team member suggests lowering today's target because the line is behind. What should the reviewer say?",
+   "options": [
+    {
+     "id": "a",
+     "t": "No. The target stays as approved; we record the gap, find out why and act. Targets change only through the approved planning process."
+    },
+    {
+     "id": "b",
+     "t": "Yes, it keeps morale high."
+    },
+    {
+     "id": "c",
+     "t": "Yes, but only on the board, not in the system."
+    },
+    {
+     "id": "d",
+     "t": "Remove the target from the board for today."
+    }
+   ],
+   "explain": "Changing a target to make actual performance look acceptable hides problems.",
+   "key": "i9wdofti1g"
+  },
+  {
+   "id": "q09",
+   "area": "abnormality",
+   "scenario": true,
+   "text": "Which is the best abnormality record entry?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Press problem again, operator careless."
+    },
+    {
+     "id": "b",
+     "t": "Line 2 CP-04, Shift A 06:52–11:40: 5 stops, alarm 'platen steam pressure low', 46 min lost, 48 tyres on hold. Evidence: PLC log, hold tag QH-0412."
+    },
+    {
+     "id": "c",
+     "t": "Many stops today."
+    },
+    {
+     "id": "d",
+     "t": "Boiler issue suspected; no action needed."
+    }
+   ],
+   "explain": "Record what, where, when and how big, with evidence, and no blame or unverified cause.",
+   "key": "2c7pp8bigb6"
+  },
+  {
+   "id": "q10",
+   "area": "containment",
+   "scenario": true,
+   "text": "Green tyres from one building drum are found underweight at the 18:00 check; 17:00 was in spec. What is the right containment?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Send them on; final inspection will catch defects."
+    },
+    {
+     "id": "b",
+     "t": "Hold only the two tyres that were checked."
+    },
+    {
+     "id": "c",
+     "t": "Segregate and tag all tyres from that drum since the last good check, and inform Quality per the hold procedure."
+    },
+    {
+     "id": "d",
+     "t": "Scrap the entire day's production immediately."
+    }
+   ],
+   "explain": "Containment covers all potentially affected product back to the last good check; release is by Quality.",
+   "key": "1jnz06us97v"
+  },
+  {
+   "id": "q11",
+   "area": "whywhy",
+   "scenario": true,
+   "text": "In a Why-Why Analysis, when should the team stop asking 'why'?",
+   "options": [
+    {
+     "id": "a",
+     "t": "After exactly five whys."
+    },
+    {
+     "id": "b",
+     "t": "When someone to blame has been identified."
+    },
+    {
+     "id": "c",
+     "t": "After the first answer, to save time."
+    },
+    {
+     "id": "d",
+     "t": "When an evidence-supported, controllable cause is reached that explains all the facts, and it can be verified."
+    }
+   ],
+   "explain": "There is no fixed number of whys; each step needs evidence, and blame is not a root cause.",
+   "key": "285nc1q0dz9"
+  },
+  {
+   "id": "q12",
+   "area": "rca",
+   "scenario": true,
+   "text": "A press stops repeatedly; each reset restores production but the stops return. Which is a corrective action?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Reset the press faster each time."
+    },
+    {
+     "id": "b",
+     "t": "Revise the PM standard to include the inspection whose absence caused the strainer blockage (the verified root cause)."
+    },
+    {
+     "id": "c",
+     "t": "Hold the tyres cured during the stops."
+    },
+    {
+     "id": "d",
+     "t": "Clean the strainer once."
+    }
+   ],
+   "explain": "Correction restores, containment limits impact, and corrective action removes the verified root cause.",
+   "key": "nqxpkfg0cp"
+  },
+  {
+   "id": "q13",
+   "area": "standards",
+   "scenario": false,
+   "text": "After a standard is revised because of a verified root cause, what must follow?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Nothing; the new document is on the server."
+    },
+    {
+     "id": "b",
+     "t": "Email it to the plant head only."
+    },
+    {
+     "id": "c",
+     "t": "Issue it under document control, withdraw old copies, train the affected team and verify it is followed."
+    },
+    {
+     "id": "d",
+     "t": "Wait for the annual audit to check it."
+    }
+   ],
+   "explain": "A revised standard changes practice only when it is controlled, trained on and verified.",
+   "key": "1obnoc72zmq"
+  },
+  {
+   "id": "q14",
+   "area": "horizontal",
+   "scenario": true,
+   "text": "A countermeasure worked on one steam-heated press. Another line has electrically heated presses with no steam strainer. What should happen?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Don't deploy it there; the failure mechanism doesn't exist. Deploy to presses with the same mechanism, and assess similar-but-different equipment first."
+    },
+    {
+     "id": "b",
+     "t": "Copy the countermeasure to every press in the plant."
+    },
+    {
+     "id": "c",
+     "t": "Never share countermeasures outside the original press."
+    },
+    {
+     "id": "d",
+     "t": "Deploy everywhere without checking, then fix problems later."
+    }
+   ],
+   "explain": "Horizontal deployment checks applicability and local conditions before deploying.",
+   "key": "g2dmjxgk49"
+  },
+  {
+   "id": "q15",
+   "area": "effectiveness",
+   "scenario": true,
+   "text": "All actions for a recurring problem show 'Closed' in the tracker. How is effectiveness verified?",
+   "options": [
+    {
+     "id": "a",
+     "t": "The 'Closed' status proves it."
+    },
+    {
+     "id": "b",
+     "t": "The action owner confirms verbally."
+    },
+    {
+     "id": "c",
+     "t": "Compare recurrence data for the original problem measure over a defined period (e.g. stops per shift before vs after) and confirm the actions were implemented."
+    },
+    {
+     "id": "d",
+     "t": "Ask whether anyone has complained recently."
+    }
+   ],
+   "explain": "Marking an action complete does not prove effectiveness; data on the original problem does.",
+   "key": "2ap39ygkbp3"
+  }
+ ]
+};
+
+// ---- content.js ----
+// Learning content: characters and the six missions. All plant data is fictional and labelled SIMULATED.
+// Terms marked [TQM-VALIDATE] in README must be confirmed by JK Tyre's TQM cell before rollout.
+(function () {
+  const DWM = window.DWM;
+
+  DWM.CHARACTERS = {
+    arjun: { name: "Arjun", role: "Production Supervisor", color: "#2f5f9e", skin: "#b07a52", hair: "#1c1a1a", hat: "#e3a73a" },
+    meera: { name: "Meera", role: "DWM Champion", color: "#1f7a6d", skin: "#c48c63", hair: "#231a17", hat: null },
+    kabir: { name: "Kabir", role: "Problem-Solving Engineer", color: "#8a5a12", skin: "#a8714b", hair: "#2a2220", hat: "#f2f5fa" },
+    asha:  { name: "Asha", role: "Quality Mentor", color: "#6b3f86", skin: "#bf8660", hair: "#1a1414", hat: null },
+  };
+
+  const SIM = '<span class="sim">SIMULATED DATA</span>';
+  const tbl = (head, rows, flags = []) =>
+    `<div class="tablewrap"><table><thead><tr>${head.map((h) => `<th${/^#|num:/.test(h) ? ' class="num"' : ""}>${h.replace(/^num:/, "")}</th>`).join("")}</tr></thead><tbody>${rows
+      .map((r, i) => `<tr${flags.includes(i) ? ' class="flag"' : ""}>${r.map((c, j) => `<td${/^num:/.test(head[j]) ? ' class="num"' : ""}>${c}</td>`).join("")}</tr>`)
+      .join("")}</tbody></table></div>`;
+  DWM.tbl = tbl;
+  DWM.SIM = SIM;
+
+  // ---------------------------------------------------------------- Mission 1
+  const m1 = {
+    id: "m1", n: 1, phase: "PLAN", title: "Build the DWM Foundation", guide: "meera",
+    summary: "Connect objectives, roles, standards, the MP/CP Tree and the MP Planning Sheet to daily work.",
+    steps: [
+      { id: "intro", type: "dialog", speaker: "meera", say: "Welcome, Improvement Champion. DWM, Daily Work Management, is how every person runs their routine work to standard, checks it against targets and acts on abnormalities every day. It starts with PLAN: the structure that makes daily work measurable." },
+      { id: "cards", type: "dialog", speaker: "meera",
+        say: "Here are the six building blocks on our curing department wall. Read each card. In the next step you'll put them in the order an objective flows down to the shop floor.",
+        panel: `<div class="grid2">${[
+          ["Organisational objective", "Plant goal, e.g. improve curing output and on-time delivery this year."],
+          ["Organisation structure & Role Sheet", "Who is responsible for what: each role's duties, MP/CPs and review responsibilities."],
+          ["Standards", "Approved way of doing the work: SOPs, work instructions, control plans, PM checklists."],
+          ["MP/CP Tree", "Breaks a result measure (Management Point) down into the process measures that drive it (Check Points)."],
+          ["MP Planning Sheet", "For each MP/CP: unit, target, frequency, method, data source, owner, and the action when off-target."],
+          ["Daily performance record", "The board/log where actuals are recorded against target at the defined frequency."],
+        ].map(([t, d]) => `<div class="panel flat"><div class="label">${t}</div><p class="muted">${d}</p></div>`).join("")}</div>` },
+      { id: "chain", type: "sequence", speaker: "meera",
+        prompt: "Order the cards from the organisational objective down to the daily record.",
+        items: ["Organisational objective", "Organisation structure & Role Sheet", "Standards", "MP/CP Tree", "MP Planning Sheet", "Daily performance record"],
+        fbWrong: "Not quite. Ask: who owns it (Role Sheet), how is it done (Standards), which measures show it (MP/CP Tree), how and when each is tracked (MP Planning Sheet), and where it is recorded daily.",
+        learn: "This matches the PLAN stage of our DWM flow: Organisation structure, Role Sheet and Standards, then the MP/CP Tree and the MP Planning Sheet. The daily record is where DO and CHECK happen." },
+      { id: "tree-vs-sheet", type: "classify", speaker: "meera",
+        prompt: "The MP/CP Tree and the MP Planning Sheet are different documents. Which one answers each question?",
+        categories: ["MP/CP Tree", "MP Planning Sheet"],
+        items: [
+          { t: "Which process measures (e.g. press uptime, cure-cycle adherence) drive shift output?", a: "MP/CP Tree" },
+          { t: "What is the target for press uptime and how often is it reviewed?", a: "MP Planning Sheet" },
+          { t: "Who records the measure, from which data source?", a: "MP Planning Sheet" },
+          { t: "How does a plant result break down into measures each role can control?", a: "MP/CP Tree" },
+          { t: "What action is taken, and by whom, when the measure is off-target?", a: "MP Planning Sheet" },
+        ],
+        learn: "The Tree shows the cause-and-effect breakdown of measures. The Planning Sheet turns each measure into a routine: target, frequency, method, owner and response. Treating them as one document loses either the logic or the routine." },
+      { id: "flowdown", type: "choice", speaker: "arjun",
+        prompt: "Plant objective: \"Improve curing output and on-time delivery.\" Which is a measurable daily activity derived correctly from it?",
+        options: [
+          { t: "Shift Supervisor records curing-press uptime and output against the MP Planning Sheet target at each 2-hour checkpoint, and acts on deviations.", ok: true, fb: "Yes. It names the role, the measure, the target source, the frequency and the response. That is DWM." },
+          { t: "Everyone tries harder to produce more tyres every day.", fb: "An intention, not a measurable activity. There is no measure, target, frequency or owner." },
+          { t: "The plant manager reviews annual output at the year-end meeting.", fb: "Too infrequent to manage daily work. By year-end the losses have already happened." },
+          { t: "Operators fill in a log sheet that no one reviews.", fb: "Recording without review and action is not management. DWM requires a defined review and response." },
+        ],
+        learn: "DWM translates objectives and standards into routine execution, monitoring and corrective action." },
+      { id: "close", type: "dialog", speaker: "meera", say: "Good foundation. Remember the chain: objective → role → standard → measure → plan → daily record. If any link is missing, daily work drifts. Next, Arjun will show you how targets and review frequency are set." },
+    ],
+  };
+
+  // ---------------------------------------------------------------- Mission 2
+  const paceTable = tbl(["Checkpoint", "num:Expected (cum.)", "num:Actual (cum.)", "num:Gap"], [
+    ["08:00 (2 h)", "250", "220", '<span class="bad-t">−30</span>'],
+    ["10:00 (4 h)", "500", "390", '<span class="bad-t">−110</span>'],
+    ["12:00 (6 h)", "750", "570", '<span class="bad-t">−180</span>'],
+  ]);
+  const m2 = {
+    id: "m2", n: 2, phase: "PLAN · DO", title: "Set the Target and Review Frequency", guide: "arjun",
+    summary: "Compare actual output with plan, set a sound target and choose how often to review.",
+    steps: [
+      { id: "intro", type: "dialog", speaker: "arjun", say: "Curing Line 2, Shift A, 06:00–14:00. Plan is 1,000 tyres per shift. Our MP Planning Sheet levels that at 125 tyres per hour, so we can judge pace at each 2-hour checkpoint instead of waiting for shift end." },
+      { id: "gap", type: "choice", speaker: "arjun",
+        panel: `<div class="row"><b>Curing Line 2 · Shift A · Plan 1,000 tyres</b>${SIM}</div>${paceTable}<p class="muted" style="margin-top:6px">Expected = 125 tyres/hour × hours elapsed (levelled plan, simulated).</p>`,
+        prompt: "Actuals at successive checkpoints are 220, 390 and 570. What does the comparison tell you?",
+        options: [
+          { t: "The line is 180 tyres (24%) behind expected at 12:00 and the gap has widened at every checkpoint. Verify the data and investigate now.", ok: true, fb: "Correct. The gap grew from 30 to 110 to 180. A widening gap means something is still going wrong." },
+          { t: "570 is 57% of 1,000 with 2 hours left, so the shift is roughly on track.", fb: "Two hours at plan pace adds only 250, giving at most 820. Comparing with the levelled expected figure shows the real gap." },
+          { t: "Wait until shift end; output often catches up.", fb: "Waiting removes the chance to recover. The checkpoint review exists to act within the shift." },
+          { t: "Reduce the shift target to 800 so the gap closes.", fb: "Changing a target to make actuals look acceptable hides the problem. Targets change only through the approved planning process." },
+        ],
+        learn: "Expected-to-date (not just the end-of-shift target) is how a checkpoint review detects a gap early." },
+      { id: "target", type: "choice", speaker: "arjun",
+        prompt: "Line 3 is starting a new tyre size. Which target-setting approach should the MP Planning Sheet use?",
+        options: [
+          { t: "Derive the target from customer demand and the approved production plan, then check it against demonstrated process capability (cycle time × presses × available time, less planned losses) and known constraints.", ok: true, fb: "Right. A good target is aligned to demand and plans, achievable by the process as it is, and challenging where capability allows." },
+          { t: "Copy Line 2's target of 1,000 because the lines look similar.", fb: "Copying blindly ignores differences in cure time, press count, tyre size and constraints." },
+          { t: "Set it 20% above last month's best, because stretch always motivates.", fb: "An arbitrary stretch with no link to demand or capability produces a target that is either meaningless or impossible." },
+          { t: "Let each shift set its own target based on what it achieved yesterday.", fb: "That makes the target follow performance. A target must be set independently so gaps are visible." },
+        ],
+        learn: "Targets must be aligned with customer demand, approved plans, process capability and constraints, and approved by the right authority." },
+      { id: "freq", type: "classify", speaker: "meera",
+        prompt: "Choose a suitable review frequency for each situation.",
+        categories: ["Continuous / near-real-time with alarm", "Each 1–2 h checkpoint in the shift", "Daily", "Monthly"],
+        items: [
+          { t: "Fast-moving tyre-building line with frequent small deviations in output and scrap.", a: "Each 1–2 h checkpoint in the shift" },
+          { t: "Stable process: warehouse label stock level, changes slowly, low risk.", a: "Daily" },
+          { t: "Critical parameter: curing platen temperature and pressure, with cure-quality and safety impact.", a: "Continuous / near-real-time with alarm" },
+        ],
+        fbWrong: "Match frequency to risk and speed of change: the faster things change and the higher the impact, the shorter the interval.",
+        learn: "Review frequency depends on risk, speed of change, the time needed to respond, customer and safety impact, and the approved control plan. Critical cure parameters follow the control plan's monitoring requirements. [TQM-VALIDATE: confirm against JK Tyre control plans.]" },
+      { id: "freq-why", type: "choice", speaker: "meera",
+        prompt: "Why not simply review everything every 15 minutes?",
+        options: [
+          { t: "Over-frequent review of slow, low-risk measures wastes effort and buries the important signals. Effort should follow risk.", ok: true, fb: "Exactly. Frequency is a design choice that balances detection speed against effort." },
+          { t: "Because frequent review is never useful.", fb: "Frequent review is essential for fast-changing or critical measures." },
+          { t: "Because the board only has space for daily figures.", fb: "Board layout follows the MP Planning Sheet, not the other way round." },
+        ] },
+      { id: "close", type: "dialog", speaker: "arjun", say: "Good. Now let's go to the DWM station. The board should tell us what the team planned, what actually happened, where the gaps are, and who is following up." },
+    ],
+  };
+
+  // ---------------------------------------------------------------- Mission 3 (DWM station, see station.js)
+  const BOARD = {
+    A: { t: "Shift target vs actual", v: "Plan 1,000 · Exp. 750 · Act. 570", alert: true,
+      html: `<div class="row" style="justify-content:space-between"><b>A · Shift target and actual · Curing Line 2 · Shift A (06:00–14:00)</b>${SIM}</div>
+      ${tbl(["Checkpoint", "num:Expected (cum.)", "num:Actual (cum.)", "num:Gap", "num:Gap %"], [["08:00", "250", "220", "−30", "−12%"], ["10:00", "500", "390", "−110", "−22%"], ["12:00 (current)", "750", "570", "−180", "−24%"]], [2])}
+      <p style="margin-top:8px">Expected = levelled plan of 125 tyres/h. Shift plan = 1,000 tyres. Alert rule on MP Planning Sheet: act if gap &gt; 5% at any checkpoint.</p>` },
+    B: { t: "MP / CP indicators", v: "Uptime 82% (tgt ≥ 95%)", alert: true,
+      html: `<div class="row" style="justify-content:space-between"><b>B · MP/CP indicators (to 12:00)</b>${SIM}</div>
+      ${tbl(["Indicator", "Type", "num:Target", "num:Actual", "Status"], [["Shift output (tyres)", "MP", "750 by 12:00", "570", '<span class="bad-t">Off target</span>'], ["Curing press uptime (6 presses)", "CP", "≥ 95%", "82%", '<span class="bad-t">Off target</span>'], ["Cure-cycle adherence", "CP", "100%", "100%", '<span class="ok-t">OK</span>'], ["Tyres on quality hold", "MP", "0", "48", '<span class="bad-t">Off target</span>'], ["First-pass yield", "MP", "≥ 98.5%", "98.9%", '<span class="ok-t">OK</span>']], [0, 1, 3])}` },
+    C: { t: "Review frequency & time", v: "Next review 14:00", alert: false,
+      html: `<div class="row" style="justify-content:space-between"><b>C · Review frequency and time</b>${SIM}</div>
+      ${tbl(["Indicator", "Review frequency", "Reviewer (role)", "Last", "Next"], [["Shift output", "Every 2 h checkpoint", "Shift Supervisor", "12:00", "14:00 (handover)"], ["Press uptime / stops", "Shift end only", "Shift Supervisor", "06:00", "14:00"], ["Quality hold status", "Each checkpoint", "Quality Inspector", "12:00", "14:00"], ["Action tracker", "Daily 09:30 meeting", "Production Manager", "Today 09:30", "Tomorrow 09:30"]])}` },
+    D: { t: "Abnormality / loss record", v: "CP-04: 5 stops · 46 min", alert: true,
+      html: `<div class="row" style="justify-content:space-between"><b>D · Abnormality / loss record · Shift A</b>${SIM}</div>
+      ${tbl(["Time", "Where", "What was observed", "num:Loss", "Source"], [["06:52", "CP-04", "Press stop, alarm: platen steam pressure low", "9 min", "Press PLC log"], ["08:31", "CP-04", "Press stop, same alarm", "8 min", "Press PLC log"], ["09:47", "CP-04", "Press stop, same alarm", "11 min", "Press PLC log"], ["10:58", "CP-04", "Press stop, same alarm", "9 min", "Press PLC log"], ["11:40", "CP-04", "Press stop, same alarm", "9 min", "Press PLC log"], ["11:45", "Quality hold", "48 tyres from CP-04 (cured 06:52–11:40) placed on hold pending cure-quality inspection", "48 tyres", "Quality hold tag QH-0412"]], [0, 1, 2, 3, 4])}
+      <p style="margin-top:8px">Total CP-04 stoppage: 46 min. Other presses: no stops recorded.</p>` },
+    E: { t: "Action tracker", v: "1 overdue action", alert: true,
+      html: `<div class="row" style="justify-content:space-between"><b>E · Action tracker</b>${SIM}</div>
+      ${tbl(["ID", "Action", "Owner (role)", "Due", "Status"], [["A-115", "Replace worn bladder on CP-02", "Maintenance Lead", "10 Oct", "Closed · effectiveness verified"], ["A-117", "Check CP-04 steam supply after low-pressure stops on previous shift", "Maintenance Lead", "Yesterday", '<span class="bad-t">Open · OVERDUE</span>'], ["A-118", "Refresher on green-tyre loading standard, Shift C", "Shift Supervisor", "+6 days", "In progress"]], [1])}` },
+    F: { t: "Standard reference", v: "SOP-CUR-07 rev 4", alert: false,
+      html: `<div class="row" style="justify-content:space-between"><b>F · Relevant standards</b>${SIM}</div>
+      <ul><li><b>SOP-CUR-07 rev 4</b>: Curing press stop recovery. Operator may reset only after the alarm cause is cleared. Steam-side work needs Maintenance with lock-out/tag-out (LOTO).</li>
+      <li><b>QP-HOLD-02</b>: Any tyre cured during a cure-parameter deviation is tagged and held. Release only by Quality after inspection.</li>
+      <li><b>ESC-MAT-01</b>: Escalation matrix (see H).</li></ul>` },
+    G: { t: "Previous shift / trend", v: "CP-04 stops ↑ 4 shifts", alert: true,
+      html: `<div class="row" style="justify-content:space-between"><b>G · Previous shifts: low steam-pressure stops</b>${SIM}</div>
+      ${tbl(["Shift", "num:CP-04 stops", "num:CP-04 min lost", "num:Other presses stops"], [["2 days ago · C (night)", "2", "17", "0"], ["Yesterday · A", "0", "0", "1"], ["Yesterday · B", "3", "28", "0"], ["Yesterday · C (night)", "4", "35", "0"], ["Today · A (to 12:00)", "5", "46", "0"]], [0, 2, 3, 4])}
+      <p style="margin-top:8px">Each time the press was reset and production recovered, but the stops returned.</p>` },
+    H: { t: "Escalation / support", v: "Matrix ESC-MAT-01", alert: false,
+      html: `<div class="row" style="justify-content:space-between"><b>H · Escalation matrix (ESC-MAT-01)</b>${SIM}</div>
+      ${tbl(["Condition", "Escalate to (role)", "Within"], [["Output gap > 5% at a checkpoint", "Shift Supervisor → Production Manager", "Same checkpoint"], ["Equipment stop repeating ≥ 3 times/shift", "Maintenance Lead", "Immediately"], ["Product on hold for a cure-parameter deviation", "Quality Engineer", "Immediately"], ["Action overdue", "Production Manager (daily meeting)", "Next daily review"], ["Any safety risk", "Stop, make safe, Safety Officer", "Immediately"]])}` },
+  };
+
+  const m3 = {
+    id: "m3", n: 3, phase: "DO · CHECK", title: "DWM Station Walk-up", guide: "arjun", station: true,
+    summary: "Walk to the DWM station beside the curing line, read the boards and run a structured review.",
+    board: BOARD,
+    steps: [
+      { id: "walk", type: "walk", title: "Walk to the station", speaker: "arjun",
+        say: "Before we act, let's go to the DWM station. The board should tell us what the team planned, what actually happened, where the gaps are, and who is following up.",
+        arrive: { speaker: "meera", say: "Reviews happen here, at a fixed place and a fixed cadence, so the right people meet the facts on time. Nobody has to search for data or chase people. This board is our review point." } },
+      { id: "target", title: "Review the target", requires: ["A"], type: "choice", speaker: "arjun",
+        prompt: "Open board A. How is the line performing against plan?",
+        options: [
+          { t: "At 12:00 the line is 180 tyres (24%) behind the expected 750, and the gap has grown at every checkpoint.", ok: true, fb: "Right. You compared the actual with the expected-to-date figure, not just the shift total." },
+          { t: "570 of 1,000 with two hours left: on track.", fb: "Two more hours at 125/h gives at most 820. Check the expected-to-date figure on board A." },
+          { t: "The target of 1,000 is too high, so the gap isn't real.", fb: "The target comes from the approved plan. Questioning it is a planning topic, not a reason to ignore today's gap." },
+        ] },
+      { id: "freq", title: "Check review frequency", requires: ["C"], type: "choice", speaker: "meera",
+        prompt: "Open board C. Is the review frequency suitable for what is happening on the line?",
+        options: [
+          { t: "Output review every 2 h is fine, but press stops are reviewed only at shift end. While stops repeat and output is falling, review them at each checkpoint (or sooner) so action isn't delayed.", ok: true, fb: "Yes. Frequency should match risk and speed of change. A shift-end review of a live, repeating problem is too slow." },
+          { t: "Everything is fine as defined. The board says next review at 14:00.", fb: "A defined frequency still needs a sense check. Five stops by 12:00 with no review until 14:00 means delayed action." },
+          { t: "Move all reviews to weekly to reduce meeting time.", fb: "Weekly review of a fast-changing line would miss shift-level losses entirely." },
+          { t: "Review every indicator every 5 minutes from now on.", fb: "Over-reviewing stable indicators wastes effort. Increase frequency where risk is, not everywhere." },
+        ] },
+      { id: "spot", title: "Spot abnormalities", requires: ["B", "D"], type: "classify", speaker: "meera",
+        prompt: "Open boards B and D. Sort each statement: is it an observed fact or an assumption?",
+        categories: ["Observed fact", "Assumption"],
+        items: [
+          { t: "Output is 180 tyres below expected at 12:00.", a: "Observed fact" },
+          { t: "CP-04 stopped 5 times this shift with 'platen steam pressure low', 46 min lost.", a: "Observed fact" },
+          { t: "48 tyres from CP-04 are on quality hold pending inspection.", a: "Observed fact" },
+          { t: "Action A-117 is past its due date.", a: "Observed fact" },
+          { t: "The CP-04 operator is careless.", a: "Assumption" },
+          { t: "The 48 held tyres are defective.", a: "Assumption" },
+          { t: "The boiler house is supplying low steam pressure.", a: "Assumption" },
+        ],
+        fbWrong: "A fact is something the board, a log or a measurement shows. A judgement about people, or a cause nobody has checked, is an assumption.",
+        learn: "Held tyres are 'suspect', not 'defective', until inspection decides. Blaming a person without evidence is an assumption, and it stops the team looking for the real cause." },
+      { id: "record", title: "Open the record", type: "classify", speaker: "meera",
+        prompt: "Build a concise problem statement for the abnormality record. Pick the best entry for each field.",
+        items: [
+          { t: "<b>What</b>", options: ["Press is bad", "Repeated press stops, alarm 'platen steam pressure low'", "Operator stopped the press"], a: "Repeated press stops, alarm 'platen steam pressure low'" },
+          { t: "<b>Where</b>", options: ["Curing area somewhere", "Curing Line 2, press CP-04", "All presses"], a: "Curing Line 2, press CP-04" },
+          { t: "<b>When</b>", options: ["Today, Shift A, 06:52–11:40 (5 stops)", "Always", "Sometimes in the morning"], a: "Today, Shift A, 06:52–11:40 (5 stops)" },
+          { t: "<b>How big</b>", options: ["46 min lost, output −180 vs expected, 48 tyres on hold", "A lot of loss", "Not known"], a: "46 min lost, output −180 vs expected, 48 tyres on hold" },
+          { t: "<b>Evidence</b>", options: ["Press PLC alarm log, board D, hold tag QH-0412", "Operator's opinion", "None needed"], a: "Press PLC alarm log, board D, hold tag QH-0412" },
+        ],
+        learn: "A good problem statement is specific (what, where, when, how big) and evidence-based, with no cause and no blame in it." },
+      { id: "tracker", title: "Review the action tracker", requires: ["E", "H"], type: "choice", speaker: "arjun",
+        prompt: "Open boards E and H. Action A-117 (Maintenance Lead, due yesterday) is overdue and linked to today's stops. What should the review do?",
+        options: [
+          { t: "Ask the owner for status and the reason for the delay, agree a realistic new date, record it, and escalate per the matrix because it is linked to a live, repeating abnormality.", ok: true, fb: "Correct. Ownership, due date and status are reviewed, not just displayed. Overdue actions linked to live problems are escalated." },
+          { t: "Mark A-117 closed. The press restarts each time anyway.", fb: "Closing an action that has not been done hides the problem, and the stops are still happening." },
+          { t: "Quietly move the due date to next week so the board looks green.", fb: "Silently changing dates removes accountability. Changes must be agreed and recorded." },
+          { t: "Reassign it to the CP-04 operator.", fb: "Steam-side checks need Maintenance and LOTO. The owner must be a role with the authority and skills to act." },
+        ] },
+      { id: "next", title: "Decide the next step", requires: ["F"], type: "multi", speaker: "arjun",
+        prompt: "Open board F. Select ALL appropriate immediate steps.",
+        options: [
+          { t: "Confirm the stop data against the press PLC log.", ok: true, fb: "Verify facts before acting." },
+          { t: "Restore normal conditions per SOP-CUR-07: Maintenance clears the steam-side cause under LOTO before reset.", ok: true, fb: "Restore safely and to standard." },
+          { t: "Keep the 48 tyres on hold until Quality inspects and decides, per QP-HOLD-02.", ok: true, fb: "Containment protects the customer." },
+          { t: "Record the abnormality and escalate to the Maintenance Lead and Quality Engineer per ESC-MAT-01.", ok: true, fb: "Record and escalate as the matrix requires." },
+          { t: "Release the held tyres to recover output.", ok: false, fb: "Never bypass quality controls to hit output." },
+          { t: "Bypass the low-pressure interlock to stop the nuisance stops.", ok: false, fb: "Bypassing a safety or quality interlock is unsafe and prohibited." },
+          { t: "Lower today's target to 600.", ok: false, fb: "Changing the target hides the gap." },
+        ],
+        learn: "Immediate correction restores normal conditions. Containment limits the impact while the issue is investigated. Neither removes the root cause." },
+      { id: "history", title: "Check history", requires: ["G"], type: "choice", speaker: "kabir",
+        prompt: "Open board G. Is this issue isolated or recurring, and what does that imply?",
+        options: [
+          { t: "Recurring: CP-04 has had the same low-pressure stops in 4 of the last 5 shifts while other presses are clean. Resetting hasn't fixed it, so a Why-Why / RCA is warranted.", ok: true, fb: "Yes. The same phenomenon keeps returning on one press. Correction alone has failed, so we need the root cause." },
+          { t: "Isolated: production recovered each time.", fb: "Recovery each time is exactly why it keeps returning. The cause was never removed." },
+          { t: "Recurring on all presses, so it must be the boiler.", fb: "Board G shows other presses with almost no stops. The pattern points to CP-04 specifically." },
+        ] },
+      { id: "summary", title: "Summarise the review", type: "summary", speaker: "meera",
+        prompt: "Here is the review summary built from your decisions. Confirm the next review time and whether RCA is warranted.",
+        fields: {
+          nextReview: { label: "Next review of CP-04 stops", options: ["Next checkpoint (14:00), and at every checkpoint while the issue is open", "Tomorrow's daily meeting", "End of the month"], a: 0 },
+          rca: { label: "Why-Why / RCA warranted?", options: ["Yes: recurring across shifts, correction alone has not worked", "No: production recovers each time"], a: 0 },
+        } },
+      { id: "close", type: "dialog", speaker: "meera", say: "Well done. The DWM station isn't just a display board. It is where we review, decide, assign owners, escalate and follow up. And we never change a target just to make the actual look acceptable." },
+    ],
+  };
+
+  // ---------------------------------------------------------------- Mission 4
+  const tbBoard = `<div class="board"><div class="board-title"><b>TYRE BUILDING · TB-2 · SHIFT B (14:00–22:00) · REVIEW AT 18:30</b>${SIM}</div>
+    <div class="board-detail" style="margin-top:0">${tbl(["Measure", "Target / expected", "Actual", "Rule (MP Planning Sheet)"], [["Output (green tyres)", "540 by 18:30 (plan 960/shift)", "508", "Act if gap > 5%"], ["Downtime", "≤ 45 min per shift", "21 min so far", "Act if > 45 min"], ["Scrap", "≤ 1.0%", "Board: 9 tyres (1.8%)<br>MES log: 13 tyres (2.6%)", "Act if > 1.0%"], ["Green-tyre weight check", "Hourly, all in spec", "17:00 OK · 18:00: 2 of 5 underweight (drum 3)", "Out of spec ⇒ contain"]])}
+    <div style="height:10px"></div>
+    ${tbl(["Shift", "num:Output", "num:Scrap %"], [["Yesterday A", "958", "0.9"], ["Yesterday B", "961", "0.8"], ["Today A", "955", "1.0"], ["Today B (to 18:30)", "508", "2.6 (MES)"]])}</div></div>`;
+  const m4 = {
+    id: "m4", n: 4, phase: "CHECK", title: "Identify and Respond to Abnormalities", guide: "meera",
+    summary: "Verify the data, identify the abnormality, contain, restore and escalate in proportion to the risk.",
+    steps: [
+      { id: "intro", type: "dialog", speaker: "meera", say: "A new board, a different area: tyre building line TB-2. CHECK means asking 'Is there an abnormality?' If not, we continue routine work. If yes, we restore normal conditions safely, then identify and record it." },
+      { id: "verify", type: "choice", speaker: "meera", panel: tbBoard,
+        prompt: "The board scrap count (9 tyres) and the MES scrap log (13 tyres) don't match. What first?",
+        options: [
+          { t: "Verify the figures at source (MES scrap log, scrap bin count) and correct the board before deciding.", ok: true, fb: "Right. Decisions on wrong data are wrong decisions. Verify first, quickly." },
+          { t: "Use the board figure; it's what the team wrote.", fb: "When two sources disagree, check the source data before acting." },
+          { t: "Ignore scrap until month-end reconciliation.", fb: "Either figure is above the 1.0% limit. Waiting for month-end means the loss keeps happening." },
+        ] },
+      { id: "identify", type: "multi", speaker: "meera", panel: tbBoard,
+        prompt: "After verification (scrap confirmed at 13 tyres, 2.6%), which measures are abnormal against their rules? Select all.",
+        options: [
+          { t: "Output: 508 vs 540 expected (−5.9%)", ok: true, fb: "Gap > 5% rule ⇒ abnormal." },
+          { t: "Downtime: 21 min vs ≤ 45 per shift", ok: false, fb: "Within its limit, so normal." },
+          { t: "Scrap: 2.6% vs ≤ 1.0%", ok: true, fb: "Above limit ⇒ abnormal." },
+          { t: "Green-tyre weight: 2 checks out of spec at 18:00", ok: true, fb: "Out-of-spec ⇒ abnormal and needs containment." },
+        ],
+        learn: "An abnormality is a deviation from the standard or target, judged by the rule on the MP Planning Sheet, not by feeling." },
+      { id: "respond", type: "multi", speaker: "asha",
+        prompt: "Two green tyres from building drum 3 were underweight at the 18:00 check; the 17:00 check was in spec. Select ALL appropriate immediate responses.",
+        options: [
+          { t: "Segregate and tag all tyres built on drum 3 since the last good check (17:00) and inform Quality, per the hold procedure.", ok: true, fb: "Contain everything that might be affected, back to the last good check." },
+          { t: "Stop drum 3 and restore it to standard. Only authorised staff make adjustments, then verify with a check.", ok: true, fb: "Restore normal conditions safely, then confirm with data." },
+          { t: "Record the abnormality and escalate to the Shift Supervisor and Quality as per the matrix.", ok: true, fb: "Record it and escalate it." },
+          { t: "Send them to curing; final inspection will catch any bad ones.", ok: false, fb: "Passing suspect product downstream bypasses quality control." },
+          { t: "Change the scrap target to 2.6% for this shift.", ok: false, fb: "Moving the target hides the abnormality." },
+          { t: "Write 'operator error' as the cause in the log.", ok: false, fb: "No evidence yet. Recording blame closes the investigation before it starts." },
+        ] },
+      { id: "proportion", type: "classify", speaker: "kabir",
+        prompt: "Responses must be proportionate. Choose the right level for each abnormality.",
+        categories: ["Correct, record & monitor", "Contain, escalate & investigate (RCA)"],
+        items: [
+          { t: "Label printer jammed once for 3 minutes, cleared, no repeat in history.", a: "Correct, record & monitor" },
+          { t: "Same curing press stopping with the same alarm across 4 shifts.", a: "Contain, escalate & investigate (RCA)" },
+          { t: "Possible under-cure on tyres already shipped to a customer.", a: "Contain, escalate & investigate (RCA)" },
+          { t: "One bead-wire spool changed 5 min late; output unaffected; first time.", a: "Correct, record & monitor" },
+        ],
+        learn: "Not every abnormality needs a full Why-Why or a standard revision. Severity, recurrence, risk and how systemic it is decide the response. Safety or customer-risk issues are always escalated immediately." },
+      { id: "restored", type: "choice", speaker: "kabir",
+        prompt: "Drum 3 is adjusted and the 19:00 weight check is in spec. Is the problem solved?",
+        options: [
+          { t: "Normal conditions are restored, but the cause isn't known. Keep the containment until Quality decides, monitor at each check, and check history. If it recurs, or the risk is high, investigate the root cause.", ok: true, fb: "Exactly. Restoring normal conditions doesn't automatically remove the underlying cause." },
+          { t: "Yes, the check is in spec, so close it.", fb: "One good check shows restoration, not prevention. Without the cause, it can return." },
+          { t: "Yes, and release the held tyres now.", fb: "Held product is released only by Quality after inspection." },
+        ] },
+      { id: "close", type: "dialog", speaker: "meera", say: "Good judgement. Now, back to curing press CP-04. Its stops keep returning, so Kabir needs your help finding the root cause." },
+    ],
+  };
+
+  // ---------------------------------------------------------------- Mission 5
+  const EVIDENCE = {
+    E1: { t: "Shift records (5 shifts)", d: "CP-04: 14 stops, all with alarm 'platen steam pressure low'. Other 5 presses: 1 stop in total. Restart times after each stop: 7–11 min, same as the plant standard." },
+    E2: { t: "Platen pressure trace", d: "CP-04 platen steam pressure dips from 15.2 bar to below the 14.0 bar interlock limit before each stop. Steam header pressure stays steady at 16.5 bar throughout." },
+    E3: { t: "Header & other presses", d: "Presses CP-01 to CP-06 share the same steam header. Only CP-04 shows pressure dips." },
+    E4: { t: "Maintenance inspection (today)", d: "CP-04 platen-line strainer found ~70% blocked with scale. Steam trap downstream sluggish, with condensate backing up into the line." },
+    E5: { t: "Maintenance history", d: "CP-04 strainer last cleaned 14 months ago, during a breakdown. No record of routine strainer or trap inspection on any press." },
+    E6: { t: "PM checklist PM-CUR-03 rev 2", d: "Covers bladder, seals, hydraulics, platen temperature calibration. Strainer and steam-trap inspection are not included." },
+  };
+  const m5 = {
+    id: "m5", n: 5, phase: "ACT", title: "Why-Why Analysis and RCA", guide: "kabir",
+    summary: "Build an evidence-backed Why-Why chain for CP-04's repeated stops and plan the corrective action.",
+    evidence: EVIDENCE,
+    steps: [
+      { id: "intro", type: "dialog", speaker: "kabir", say: "Production recovered each time, but the stops came back. That's our signal for root-cause analysis. Rules: every 'why' must be backed by evidence, we stop when we reach a cause we can act on that explains all the facts, and we don't assume operator error." },
+      { id: "w1", type: "why", speaker: "kabir", level: 1, phenomenon: "CP-04 stops repeatedly (14 stops in 5 shifts).",
+        prompt: "Why 1: Why does CP-04 stop?",
+        options: [
+          { t: "Platen steam pressure falls below the 14.0 bar interlock limit, tripping the press.", ok: true, ev: ["E2", "E1"], fb: "Supported by the pressure trace (E2) and the alarm in every record (E1)." },
+          { t: "Operators restart the press too slowly.", ev: null, fb: "E1 shows restart times are normal. And slow restarts don't explain why the press stops in the first place." },
+          { t: "The press is old.", ev: null, fb: "Age is not a mechanism. It explains nothing that can be checked or acted on." },
+        ] },
+      { id: "w2", type: "why", speaker: "kabir", level: 2, phenomenon: "Platen steam pressure falls below 14.0 bar.",
+        prompt: "Why 2: Why does the platen pressure drop?",
+        options: [
+          { t: "The boiler supplies low steam pressure.", ev: null, fb: "Contradicted: the header holds 16.5 bar (E2), and other presses on the same header don't dip (E3)." },
+          { t: "Steam flow to CP-04's platen is restricted, and condensate backs up into the line.", ok: true, ev: "E4", fb: "Supported by today's inspection (E4), and consistent with only CP-04 dipping (E3)." },
+          { t: "Pressure gauges are inaccurate.", ev: null, fb: "The interlock trips on its own transmitter, and the dip lines up with real stops. Nothing suggests a gauge fault." },
+        ] },
+      { id: "w3", type: "why", speaker: "kabir", level: 3, phenomenon: "Steam flow to the CP-04 platen is restricted.",
+        prompt: "Why 3: Why is the flow restricted?",
+        options: [
+          { t: "The platen-line strainer is ~70% blocked with scale and the trap is sluggish.", ok: true, ev: "E4", fb: "Directly observed in the maintenance inspection (E4)." },
+          { t: "Someone partly closed the steam valve.", ev: null, fb: "No evidence. An assumption about a person." },
+          { t: "Bad luck: random variation.", ev: null, fb: "14 stops with one alarm on one press is a pattern, not random noise." },
+        ] },
+      { id: "w4", type: "why", speaker: "kabir", level: 4, phenomenon: "The strainer is ~70% blocked.",
+        prompt: "Why 4: Why did the strainer block?",
+        options: [
+          { t: "It is only cleaned on breakdown (last done 14 months ago). No routine inspection exists.", ok: true, ev: "E5", fb: "Supported by the maintenance history (E5)." },
+          { t: "Maintenance technicians are lazy.", ev: null, fb: "Blame, not a cause. The records show the task was never scheduled." },
+        ] },
+      { id: "w5", type: "why", speaker: "kabir", level: 5, phenomenon: "No routine strainer/trap inspection is done.",
+        prompt: "Why 5: Why is there no routine inspection?",
+        options: [
+          { t: "The PM standard PM-CUR-03 doesn't include strainer and steam-trap inspection.", ok: true, ev: "E6", fb: "Confirmed by the checklist (E6). This is a system cause we can correct, and it explains all the evidence." },
+          { t: "The maintenance budget is too small.", ev: null, fb: "No evidence links budget to this gap. The checklist itself never asked for the task." },
+        ] },
+      { id: "stop", type: "choice", speaker: "kabir",
+        prompt: "We've reached 'PM standard omits strainer/trap inspection'. Ask another why, or stop?",
+        options: [
+          { t: "Stop here. It's a verified, controllable system cause that explains all the evidence. Then verify it by testing whether the countermeasure removes the stops.", ok: true, fb: "Right. There's no fixed number of whys. Stop at an actionable, evidenced root cause, and verify it." },
+          { t: "Always continue to exactly five whys.", fb: "'Five' is a guide, not a rule. Going further without evidence leads to speculation." },
+          { t: "Continue: 'Why was the standard written badly? Because the author was careless.'", fb: "That turns into blame without evidence. The actionable cause is the standard's content." },
+        ] },
+      { id: "types", type: "classify", speaker: "kabir",
+        prompt: "Classify each action.",
+        categories: ["Correction", "Containment", "Corrective action"],
+        items: [
+          { t: "Clean the CP-04 strainer and service the trap under LOTO, then restart.", a: "Correction" },
+          { t: "Hold and inspect tyres cured during low-pressure events; review CP-04 pressure at every checkpoint until fixed.", a: "Containment" },
+          { t: "Revise PM-CUR-03 to add monthly strainer and steam-trap inspection, with the method and acceptance criteria.", a: "Corrective action" },
+        ],
+        learn: "Correction restores normal conditions now. Containment limits impact while you investigate. Corrective action removes the verified cause to prevent recurrence." },
+      { id: "plan", type: "classify", speaker: "asha",
+        prompt: "Complete the corrective-action record for the PM standard revision.",
+        items: [
+          { t: "<b>Owner (role)</b>", options: ["Maintenance Lead (Curing)", "CP-04 operator", "Everyone"], a: "Maintenance Lead (Curing)" },
+          { t: "<b>Due date</b>", options: ["Standard revised and approved within 7 days; first PM round within 14 days", "Whenever possible", "Next year"], a: "Standard revised and approved within 7 days; first PM round within 14 days" },
+          { t: "<b>Verification of implementation</b>", options: ["PM records show the new task done on every press; spot check of strainer condition", "Owner says it's done"], a: "PM records show the new task done on every press; spot check of strainer condition" },
+          { t: "<b>Effectiveness measure</b>", options: ["Zero low-pressure stops on CP-04 over the next 4 weeks (vs 2.8 per shift baseline)", "Action marked 'Closed' in tracker"], a: "Zero low-pressure stops on CP-04 over the next 4 weeks (vs 2.8 per shift baseline)" },
+        ],
+        learn: "An action is checked for effectiveness against the original problem measure. Marking it complete is not enough." },
+      { id: "close", type: "dialog", speaker: "kabir", say: "Evidence-based and owned. Asha will take it from here: did it work, and where else could the same failure happen?" },
+    ],
+  };
+
+  // ---------------------------------------------------------------- Mission 6
+  const m6 = {
+    id: "m6", n: 6, phase: "ACT", title: "Horizontal Deployment and Closing the Loop", guide: "asha",
+    summary: "Verify effectiveness, deploy where it applies, revise standards, train and keep monitoring.",
+    steps: [
+      { id: "intro", type: "dialog", speaker: "asha",
+        panel: `<div class="row"><b>CP-04 low steam-pressure stops per shift</b>${SIM}</div>${tbl(["Period", "num:Shifts", "num:Stops", "num:Stops / shift"], [["Before (baseline, 5 shifts)", "5", "14", "2.8"], ["Weeks 1–4 after revised PM", "84", "0", "0.0"]])}`,
+        say: "Four weeks on, CP-04 has had zero low-pressure stops in 84 shifts. The PM records show the new task done on schedule. That's effectiveness verified with data, not just 'action closed'. Now, where else might the same failure mechanism exist?" },
+      { id: "order", type: "sequence", speaker: "asha",
+        prompt: "Put the horizontal-deployment steps in the right order.",
+        items: ["Confirm root cause and countermeasure effectiveness", "Identify similar equipment and processes", "Assess applicability and local conditions", "Deploy where appropriate", "Revise relevant standards where justified", "Train affected teams", "Verify implementation and effectiveness", "Continue DWM monitoring and share learning"],
+        fbWrong: "Start by proving it works, then find where else it could apply and check that it fits, before deploying, standardising, training and verifying.",
+        learn: "Horizontal deployment spreads proven learning. It is not blind copying." },
+      { id: "apply", type: "classify", speaker: "asha",
+        prompt: "Decide for each candidate.",
+        categories: ["Deploy", "Assess first", "Not applicable"],
+        items: [
+          { t: "CP-01 to CP-06, Line 2: same press model, same strainer and trap design, same PM standard.", a: "Deploy" },
+          { t: "Bead-room autoclave: also uses steam strainers and traps, but different pressure and duty cycle.", a: "Assess first" },
+          { t: "CP-07/08, Line 3: electrically heated platens, no steam strainer or trap.", a: "Not applicable" },
+          { t: "Curing presses at a sister plant: same model, but water quality and PM system unknown.", a: "Assess first" },
+          { t: "Mixing-mill cooling-water circuit: different failure mechanism (scaling of cooling channels).", a: "Not applicable" },
+        ],
+        learn: "Same failure mechanism + similar conditions ⇒ deploy. Similar mechanism, different conditions ⇒ assess first. Different mechanism ⇒ don't copy." },
+      { id: "close-loop", type: "multi", speaker: "asha",
+        prompt: "The tracker shows every action 'Closed'. Which steps still close the loop? Select all.",
+        options: [
+          { t: "Confirm the revised PM-CUR-03 is approved, issued and old copies withdrawn.", ok: true, fb: "Standard revision must be formally controlled." },
+          { t: "Train maintenance technicians on the revised standard and record the training.", ok: true, fb: "A revised standard nobody is trained on doesn't change practice." },
+          { t: "Keep monitoring press stops and pressure dips on the DWM board at the defined frequency.", ok: true, fb: "Sustain: DWM monitoring detects any return." },
+          { t: "Share the learning (e.g. a one-point lesson) with other areas.", ok: true, fb: "Shared learning prevents repeats elsewhere." },
+          { t: "Remove CP-04 stops from the board since they're solved.", ok: false, fb: "Removing the measure means you would not see recurrence." },
+          { t: "Nothing more; 'Closed' proves it worked.", ok: false, fb: "Marking an action complete does not prove effectiveness or sustainment." },
+        ] },
+      { id: "close", type: "dialog", speaker: "asha", say: "That's the full DWM cycle: PLAN, DO, CHECK, ACT, and back to routine monitoring with a better standard. You're ready for the certification assessment." },
+    ],
+  };
+
+  DWM.MISSIONS = [m1, m2, m3, m4, m5, m6];
+  DWM.MISSION_BY_ID = Object.fromEntries(DWM.MISSIONS.map((m) => [m.id, m]));
+
+  DWM.LEARNING_AREAS = {
+    purpose: { label: "DWM purpose", mission: "m1" },
+    alignment: { label: "Organisational alignment", mission: "m1" },
+    roles: { label: "Role Sheets and standards", mission: "m1" },
+    mpcp: { label: "MP/CP Tree and MP Planning Sheet", mission: "m1" },
+    target: { label: "Target setting", mission: "m2" },
+    frequency: { label: "Review frequency", mission: "m2" },
+    monitoring: { label: "Performance monitoring", mission: "m2" },
+    station: { label: "DWM station review", mission: "m3" },
+    abnormality: { label: "Abnormality identification and recording", mission: "m4" },
+    containment: { label: "Correction and containment", mission: "m4" },
+    whywhy: { label: "Why-Why Analysis", mission: "m5" },
+    rca: { label: "RCA and corrective action", mission: "m5" },
+    standards: { label: "Standards revision and team training", mission: "m6" },
+    horizontal: { label: "Horizontal deployment", mission: "m6" },
+    effectiveness: { label: "Effectiveness verification", mission: "m6" },
+  };
+})();
+
+// ---- ui.js ----
+// Small DOM helpers, character portraits, dialogue, toasts and confirmation dialogs.
+(function () {
+  const DWM = window.DWM;
+
+  function h(tag, attrs, ...kids) {
+    const e = document.createElement(tag);
+    if (attrs) for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") e.className = v;
+      else if (k === "html") e.innerHTML = v;
+      else if (k === "text") e.textContent = v;
+      else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? "" : v);
+    }
+    for (const k of kids.flat()) if (k != null && k !== false) e.append(k.nodeType ? k : document.createTextNode(String(k)));
+    return e;
+  }
+
+  // Simple, professional bust portraits drawn as SVG (no external art).
+  function portrait(key) {
+    const c = DWM.CHARACTERS[key];
+    const hat = c.hat ? `<path d="M18 30 Q32 12 46 30 Z" fill="${c.hat}"/><rect x="15" y="28" width="34" height="4" rx="2" fill="${c.hat}"/>` :
+      `<path d="M19 31 Q20 15 32 15 Q45 15 45 31 Q42 22 32 22 Q23 22 19 31Z" fill="${c.hair}"/>`;
+    return `<svg viewBox="0 0 64 64" role="img" aria-label="${c.name}, ${c.role}">
+      <rect width="64" height="64" fill="${c.color}" opacity=".18"/>
+      <path d="M10 64 Q12 45 32 44 Q52 45 54 64Z" fill="${c.color}"/>
+      <rect x="27" y="38" width="10" height="8" fill="${c.skin}"/>
+      <ellipse cx="32" cy="31" rx="12" ry="13" fill="${c.skin}"/>
+      ${hat}
+      <circle cx="27.5" cy="32" r="1.4" fill="#1b1b1b"/><circle cx="36.5" cy="32" r="1.4" fill="#1b1b1b"/>
+      <path d="M28 37.5 Q32 40 36 37.5" stroke="#5a2e1e" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <rect x="40" y="50" width="9" height="5" rx="1" fill="#fff" opacity=".9"/>
+    </svg>`;
+  }
+
+  function dialogue(key, text) {
+    const c = DWM.CHARACTERS[key];
+    return h("div", { class: "dialogue", role: "group", "aria-label": `${c.name} says` },
+      h("div", { class: "portrait", html: portrait(key) }),
+      h("div", { style: "min-width:0" }, h("div", null, h("span", { class: "who", text: c.name }), " ", h("span", { class: "role", text: "· " + c.role })), h("p", { class: "say", text })));
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    let t = document.querySelector(".toast");
+    if (!t) { t = h("div", { class: "toast", role: "status" }); document.body.append(t); }
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 3200);
+  }
+
+  // In-page confirmation (the artifact frame has no window.confirm).
+  function confirmBox({ title, body, ok = "Confirm", cancel = "Cancel" }) {
+    return new Promise((resolve) => {
+      const back = h("div", { class: "modal-back" });
+      const done = (v) => { back.remove(); resolve(v); };
+      const okBtn = h("button", { class: "btn primary", onclick: () => done(true) }, ok);
+      back.append(h("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": title },
+        h("h3", { text: title }), typeof body === "string" ? h("p", { text: body }) : body,
+        h("div", { class: "row", style: "justify-content:flex-end" }, h("button", { class: "btn", onclick: () => done(false) }, cancel), okBtn)));
+      back.addEventListener("keydown", (e) => { if (e.key === "Escape") done(false); });
+      document.body.append(back); okBtn.focus();
+    });
+  }
+
+  const fmtOpts = () => ({ timeZone: DWM.CONFIG.displayTimeZone, dateStyle: "medium", timeStyle: "short" });
+  function fmtDate(iso) { if (!iso) return "—"; const d = new Date(iso); return isNaN(d) ? "—" : d.toLocaleString(undefined, fmtOpts()); }
+  function fmtDur(sec) { sec = Math.round(sec || 0); const m = Math.floor(sec / 60); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; }
+
+  function focusMain() { const m = document.getElementById("app"); const f = m.querySelector("h1, h2"); if (f) { f.setAttribute("tabindex", "-1"); f.focus({ preventScroll: true }); } window.scrollTo({ top: 0 }); }
+
+  DWM.ui = { h, portrait, dialogue, toast, confirmBox, fmtDate, fmtDur, focusMain };
+})();
+
+// ---- store.js ----
+// Persistence layer.
+//  - CENTRAL mode: claude.ai Artifact database. Identity comes from the viewer's claude.ai sign-in.
+//    Access is enforced server-side by the db rules declared at publish (see README "Security model"):
+//      participants/<uid>/...  each signed-in participant reads/writes only their own subtree
+//      participants (all)      readable only by the artifact owner
+//      audit/...               owner only
+//  - DEMO mode: this browser's localStorage only. Not for real employee records.
+(function () {
+  const DWM = window.DWM;
+  const L = DWM.logic;
+  const listeners = new Set();
+  let status = { state: "idle", text: "Not saved yet" };
+  const S = { mode: "pending", uid: null, isOwner: false, db: null, user: null, canWrite: null };
+
+  function setStatus(state, text) { status = { state, text }; listeners.forEach((f) => f(status)); }
+  const STATUS_TEXT = { saving: "Saving…", saved: "Progress saved", offline: "Offline — changes pending", error: "Unable to save — retry required" };
+
+  const ls = {
+    get(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
+    set(k, v) { localStorage.setItem(k, JSON.stringify(v)); }, // throws if storage is blocked; callers handle it
+  };
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const transient = (e) => !e || !e.code || ["unavailable", "resource_exhausted"].includes(e.code) || (typeof navigator !== "undefined" && navigator.onLine === false);
+
+  async function withTimeout(p, ms) { return Promise.race([p, sleep(ms).then(() => null)]); }
+
+  async function init() {
+    const c = window.claude;
+    if (c && typeof c.use === "function") {
+      const [db, user] = await Promise.all([withTimeout(c.use("db"), 10000), withTimeout(c.use("user"), 10000)]);
+      const uid = user ? await user.id() : null;
+      if (db && uid) {
+        S.mode = "central"; S.db = db; S.user = user; S.uid = uid;
+        S.isOwner = await user.isOwner();
+        try { S.canWrite = await user.can("data.write"); } catch { S.canWrite = null; }
+        return S;
+      }
+      S.reason = !db ? "The results store is not available in this view." : "You are not signed in to claude.ai, so your progress can't be saved centrally.";
+    } else {
+      S.reason = "This copy is running outside claude.ai, so there is no central results store.";
+    }
+    S.mode = "demo"; S.uid = "demo-local"; S.isOwner = false;
+    return S;
+  }
+
+  // ---------------- participant profile ----------------
+  const profileRef = () => S.db.doc("participants/" + S.uid);
+
+  async function loadProfile() {
+    if (S.mode === "central") {
+      let lastErr;
+      for (let i = 0; i < 3; i++) {
+        try {
+          const snap = await profileRef().get();
+          return snap.exists ? clone(snap.data()) : null;
+        } catch (e) { lastErr = e; if (!transient(e)) break; await sleep(800 * (i + 1) + Math.random() * 400); }
+      }
+      throw lastErr || new Error("load failed");
+    }
+    return ls.get("dwmq.demo.profile");
+  }
+
+  let pending = null, inflight = false, retryTimer = null, backoff = 2000;
+  function saveProfile(profile) {
+    pending = clone(profile);
+    kick();
+  }
+  async function kick() {
+    if (inflight || !pending) return;
+    clearTimeout(retryTimer);
+    if (typeof navigator !== "undefined" && navigator.onLine === false && S.mode === "central") { setStatus("offline", STATUS_TEXT.offline); return; }
+    inflight = true;
+    const body = pending; pending = null;
+    setStatus("saving", STATUS_TEXT.saving);
+    try {
+      if (S.mode === "central") await profileRef().set(body);
+      else ls.set("dwmq.demo.profile", body);
+      backoff = 2000;
+      inflight = false;
+      if (pending) return kick();
+      setStatus("saved", STATUS_TEXT.saved + (S.mode === "demo" ? " (this browser only)" : ""));
+    } catch (e) {
+      inflight = false;
+      if (!pending) pending = body;
+      if (S.mode === "central" && transient(e)) {
+        setStatus("offline", STATUS_TEXT.offline);
+        retryTimer = setTimeout(kick, backoff);
+        backoff = Math.min(backoff * 2, 60000);
+      } else {
+        S.lastError = e && e.code;
+        setStatus("error", STATUS_TEXT.error);
+      }
+    }
+  }
+  function retry() { backoff = 2000; kick(); }
+  const hasPending = () => !!pending || inflight;
+  if (typeof window !== "undefined") {
+    window.addEventListener("online", () => kick());
+    window.addEventListener("offline", () => { if (pending || inflight) setStatus("offline", STATUS_TEXT.offline); });
+  }
+
+  // ---------------- assessment attempts ----------------
+  // Attempt ids are created when the attempt starts, so a retried or double-clicked submission writes
+  // the same document instead of a second record.
+  async function saveAttempt(attempt) {
+    if (S.mode === "central") {
+      const ref = S.db.doc(`participants/${S.uid}/attempts/${attempt.attemptId}`);
+      for (let i = 0; ; i++) {
+        try {
+          const existing = await ref.get();
+          if (existing.exists && existing.data().submittedAt) return { duplicate: true, attempt: clone(existing.data()) };
+          await ref.set(attempt);
+          return { duplicate: false, attempt };
+        } catch (e) {
+          if (!transient(e) || i >= 4) throw e;
+          setStatus("offline", STATUS_TEXT.offline);
+          await sleep(1500 * (i + 1));
+        }
+      }
+    }
+    const all = ls.get("dwmq.demo.attempts") || [];
+    const dup = all.find((a) => a.attemptId === attempt.attemptId);
+    if (dup) return { duplicate: true, attempt: dup };
+    all.push(attempt);
+    ls.set("dwmq.demo.attempts", all);
+    return { duplicate: false, attempt };
+  }
+
+  async function listMyAttempts() {
+    if (S.mode === "central") {
+      const snap = await S.db.collection(`participants/${S.uid}/attempts`).get();
+      return snap.docs.map((d) => clone(d.data()));
+    }
+    return ls.get("dwmq.demo.attempts") || [];
+  }
+
+  // ---------------- owner functions (server rules decide; the UI gate is only a convenience) ----------------
+  async function listParticipants() {
+    if (S.mode !== "central") return null;
+    const out = [];
+    let last = null;
+    for (let page = 0; page < 50; page++) {
+      let q = S.db.collection("participants").orderBy("createdAt", "asc").limit(500);
+      if (last) q = q.where("createdAt", ">", last);
+      let snap;
+      for (let i = 0; ; i++) {
+        try { snap = await q.get(); break; } catch (e) { if (!transient(e) || i >= 4) throw e; await sleep(1500 * (i + 1)); }
+      }
+      snap.docs.forEach((d) => out.push({ uid: d.id, ...clone(d.data()) }));
+      if (snap.size < 500) break;
+      last = snap.docs[snap.docs.length - 1].data().createdAt;
+    }
+    return out;
+  }
+  async function listAttemptsFor(uid) {
+    if (S.mode !== "central") return [];
+    const snap = await S.db.collection(`participants/${uid}/attempts`).get();
+    return snap.docs.map((d) => clone(d.data()));
+  }
+  async function logAudit(action, detail) {
+    if (S.mode !== "central") return;
+    try { await S.db.collection("audit").doc(L.newId("audit")).set({ action, detail: detail || "", at: new Date().toISOString(), by: S.uid }); }
+    catch { /* audit failure does not block the owner, but is not reported as logged */ }
+  }
+
+  async function resetDemo() { try { localStorage.removeItem("dwmq.demo.profile"); localStorage.removeItem("dwmq.demo.attempts"); } catch {} }
+
+  DWM.store = { init, S, loadProfile, saveProfile, retry, hasPending, saveAttempt, listMyAttempts, listParticipants, listAttemptsFor, logAudit, resetDemo,
+    onStatus(f) { listeners.add(f); f(status); return () => listeners.delete(f); }, get status() { return status; } };
+})();
+
+// ---- missions.js ----
+// Mission engine: renders each step type, records decisions and drives progress through a mission.
+(function () {
+  const DWM = window.DWM;
+  const { h, dialogue } = DWM.ui;
+  const L = DWM.logic;
+
+  function seeded(seedStr) {
+    let s = parseInt(L.hash(seedStr).slice(0, 8), 36) || 1;
+    return () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+  }
+  const pointsFor = (tries) => (tries <= 1 ? 10 : tries === 2 ? 6 : 3);
+  const fb = (kind, title, text) => h("div", { class: "feedback " + kind, role: "status" }, title ? h("b", { text: title }) : null, text ? h("span", { html: text }) : null);
+
+  // ctx: { mission, step, ms (mission state), check(answer, correct) -> tries, done(), readOnly }
+  const R = {};
+
+  R.dialog = (ctx) => {
+    const { step } = ctx;
+    return h("div", { class: "stack" },
+      step.panel ? h("div", { html: step.panel }) : null,
+      dialogue(step.speaker, step.say),
+      h("div", { class: "row" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Continue →")));
+  };
+
+  R.choice = (ctx) => {
+    const { step } = ctx;
+    const rnd = seeded(ctx.mission.id + step.id);
+    const opts = L.shuffle(step.options.map((o, i) => ({ ...o, i })), rnd);
+    let chosen = null, solved = false;
+    const out = h("div", { class: "fbslot" });
+    const list = h("div", { class: "options", role: "radiogroup", "aria-label": step.prompt });
+    const checkBtn = h("button", { class: "btn primary", disabled: true }, "Check answer");
+    const btns = opts.map((o, k) => {
+      const b = h("button", { class: "opt", role: "radio", "aria-checked": "false", onclick: () => {
+        if (solved) return; chosen = o; btns.forEach((x) => { x.setAttribute("aria-checked", "false"); x.classList.remove("wrong"); }); b.setAttribute("aria-checked", "true"); checkBtn.disabled = false; } },
+        h("span", { class: "key", text: String.fromCharCode(65 + k) }), h("span", { text: o.t }));
+      list.append(b); return b;
+    });
+    checkBtn.onclick = () => {
+      if (!chosen || solved) return;
+      const ok = !!chosen.ok;
+      ctx.check({ choice: chosen.i }, ok);
+      const b = btns[opts.indexOf(chosen)];
+      out.replaceChildren();
+      if (ok) {
+        solved = true; b.classList.add("correct"); checkBtn.remove();
+        out.append(fb("ok", "Correct", chosen.fb), step.learn ? fb("note", "Key point", step.learn) : null,
+          h("div", { class: "row", style: "margin-top:12px" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Continue →")));
+      } else {
+        b.classList.add("wrong");
+        out.append(fb("bad", "Not the best choice", chosen.fb + " Try again."));
+      }
+      out.querySelector("button, .feedback")?.focus?.();
+    };
+    return h("div", { class: "stack" }, step.panel ? h("div", { html: step.panel }) : null,
+      step.speaker && step.say ? dialogue(step.speaker, step.say) : null,
+      h("p", { class: "prompt", text: step.prompt }), list, h("div", { class: "row" }, checkBtn), out);
+  };
+
+  R.multi = (ctx) => {
+    const { step } = ctx;
+    const rnd = seeded(ctx.mission.id + step.id);
+    const opts = L.shuffle(step.options.map((o, i) => ({ ...o, i })), rnd);
+    const sel = new Set();
+    let solved = false;
+    const out = h("div");
+    const list = h("div", { class: "options", role: "group", "aria-label": step.prompt });
+    const btns = opts.map((o) => {
+      const b = h("button", { class: "opt", role: "checkbox", "aria-checked": "false", onclick: () => {
+        if (solved) return; sel.has(o.i) ? sel.delete(o.i) : sel.add(o.i); b.setAttribute("aria-checked", String(sel.has(o.i))); b.classList.remove("wrong", "correct"); } },
+        h("span", { class: "key", "aria-hidden": "true", text: "☐" }), h("span", { text: o.t }));
+      list.append(b); return b;
+    });
+    const checkBtn = h("button", { class: "btn primary", onclick: () => {
+      if (solved) return;
+      const wrongPicked = opts.filter((o) => sel.has(o.i) && !o.ok);
+      const missed = opts.filter((o) => !sel.has(o.i) && o.ok);
+      const ok = !wrongPicked.length && !missed.length;
+      ctx.check({ selected: [...sel].sort() }, ok);
+      out.replaceChildren();
+      btns.forEach((b, k) => { b.classList.remove("wrong", "correct"); if (sel.has(opts[k].i)) b.classList.add(opts[k].ok ? "correct" : "wrong"); });
+      if (ok) {
+        solved = true; checkBtn.remove();
+        out.append(fb("ok", "All correct", "<ul>" + opts.map((o) => `<li>${o.ok ? "✔" : "✘"} ${o.t}: ${o.fb}</li>`).join("") + "</ul>"),
+          step.learn ? fb("note", "Key point", step.learn) : null,
+          h("div", { class: "row", style: "margin-top:12px" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Continue →")));
+      } else {
+        out.append(fb("bad", "Not yet", (wrongPicked.length ? "<ul>" + wrongPicked.map((o) => `<li>✘ ${o.t}: ${o.fb}</li>`).join("") + "</ul>" : "") +
+          (missed.length ? `You have missed ${missed.length} appropriate step${missed.length > 1 ? "s" : ""}. ` : "") + "Adjust your selection and check again."));
+      }
+    } }, "Check answer");
+    return h("div", { class: "stack" }, step.panel ? h("div", { html: step.panel }) : null,
+      h("p", { class: "prompt", text: step.prompt }), list, h("div", { class: "row" }, checkBtn), out);
+  };
+
+  R.classify = (ctx) => {
+    const { step } = ctx;
+    const vals = {};
+    let solved = false;
+    const out = h("div");
+    const rows = step.items.map((it, idx) => {
+      const cats = it.options || step.categories;
+      const seg = h("div", { class: "seg", role: "radiogroup", "aria-label": it.t.replace(/<[^>]+>/g, "") });
+      const row = h("div", { class: "citem" }, h("div", { html: it.t }), seg);
+      const order = it.options ? L.shuffle(cats, seeded(ctx.mission.id + step.id + idx)) : cats;
+      const bs = order.map((c) => h("button", { "aria-pressed": "false", role: "radio", onclick: () => {
+        if (solved) return; vals[idx] = c; bs.forEach((x) => x.setAttribute("aria-pressed", String(x.textContent === c))); row.classList.remove("wrong", "correct"); } }, c));
+      seg.append(...bs);
+      return row;
+    });
+    const checkBtn = h("button", { class: "btn primary", onclick: () => {
+      if (solved) return;
+      if (Object.keys(vals).length < step.items.length) { out.replaceChildren(fb("note", null, "Choose an answer for every row first.")); return; }
+      let wrong = 0;
+      step.items.forEach((it, i) => { const ok = vals[i] === it.a; rows[i].classList.toggle("correct", ok); rows[i].classList.toggle("wrong", !ok); if (!ok) wrong++; });
+      const ok = !wrong;
+      ctx.check({ values: step.items.map((_, i) => vals[i]) }, ok);
+      out.replaceChildren();
+      if (ok) {
+        solved = true; checkBtn.remove();
+        out.append(fb("ok", "Correct", step.fbRight || ""), step.learn ? fb("note", "Key point", step.learn) : null,
+          h("div", { class: "row", style: "margin-top:12px" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Continue →")));
+      } else out.append(fb("bad", `${wrong} row${wrong > 1 ? "s are" : " is"} not right yet (marked in red)`, (step.fbWrong || "") + " Change them and check again."));
+    } }, "Check answer");
+    return h("div", { class: "stack" }, step.panel ? h("div", { html: step.panel }) : null,
+      h("p", { class: "prompt", text: step.prompt }), h("div", { class: "classify" }, rows), h("div", { class: "row" }, checkBtn), out);
+  };
+
+  R.sequence = (ctx) => {
+    const { step } = ctx;
+    const pool = L.shuffle(step.items, seeded(ctx.mission.id + step.id));
+    const order = [];
+    let solved = false;
+    const out = h("div");
+    const poolEl = h("div", { class: "pool" });
+    const ordEl = h("ol");
+    const checkBtn = h("button", { class: "btn primary", disabled: true }, "Check order");
+    function draw() {
+      poolEl.replaceChildren(...pool.filter((x) => !order.includes(x)).map((x) =>
+        h("button", { class: "opt", onclick: () => { if (solved) return; order.push(x); draw(); } }, h("span", { class: "key", text: "+" }), h("span", { text: x }))));
+      if (!poolEl.children.length) poolEl.append(h("div", { class: "slot-empty", text: "All cards placed. Check the order, or remove a card to change it." }));
+      ordEl.replaceChildren(...order.map((x, i) => h("li", null, h("span", { text: x }),
+        solved ? null : h("button", { class: "btn small ghost", "aria-label": "Remove " + x, onclick: () => { order.splice(i, 1); draw(); } }, "✕"))));
+      for (let i = order.length; i < step.items.length; i++) ordEl.append(h("li", null, h("span", { class: "muted", text: "Choose the next card…" })));
+      checkBtn.disabled = order.length !== step.items.length;
+    }
+    checkBtn.onclick = () => {
+      const ok = order.every((x, i) => x === step.items[i]);
+      ctx.check({ order: order.slice() }, ok);
+      [...ordEl.children].forEach((li, i) => { li.classList.toggle("correct", order[i] === step.items[i]); li.classList.toggle("wrong", order[i] !== step.items[i]); });
+      out.replaceChildren();
+      if (ok) {
+        solved = true; checkBtn.remove(); draw(); [...ordEl.children].forEach((li) => li.classList.add("correct"));
+        out.append(fb("ok", "Correct order", ""), step.learn ? fb("note", "Key point", step.learn) : null,
+          h("div", { class: "row", style: "margin-top:12px" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Continue →")));
+      } else {
+        const right = order.filter((x, i) => x === step.items[i]).length;
+        out.append(fb("bad", `${right} of ${step.items.length} in the right position (green)`, (step.fbWrong || "") + " Remove the red cards and try again."));
+      }
+    };
+    draw();
+    return h("div", { class: "stack" }, h("p", { class: "prompt", text: step.prompt }),
+      h("div", { class: "seq" }, h("div", null, h("div", { class: "label", text: "Cards" }), poolEl), h("div", null, h("div", { class: "label", text: "Your order" }), ordEl)),
+      h("div", { class: "row" }, checkBtn, h("button", { class: "btn ghost", onclick: () => { if (!solved) { order.length = 0; draw(); out.replaceChildren(); } } }, "Reset")), out);
+  };
+
+  // Why-Why: choose the cause AND the evidence that supports it.
+  R.why = (ctx) => {
+    const { step, mission, ms } = ctx;
+    const ev = mission.evidence;
+    const chain = mission.steps.filter((s) => s.type === "why" && s.level < step.level).map((s) => {
+      const a = ms.answers[s.id]; const o = a && s.options[a.choice];
+      return { level: s.level, t: o ? o.t : "?", ev: a && a.ev };
+    });
+    const rnd = seeded(mission.id + step.id);
+    const opts = L.shuffle(step.options.map((o, i) => ({ ...o, i })), rnd);
+    let chosen = null, solved = false;
+    const out = h("div");
+    const evSel = h("select", { id: "ev-" + step.id, "aria-label": "Supporting evidence" },
+      h("option", { value: "" }, "Select the supporting evidence…"), ...Object.entries(ev).map(([k, v]) => h("option", { value: k }, `${k} · ${v.t}`)), h("option", { value: "none" }, "No evidence supports it"));
+    const btns = opts.map((o) => {
+      const b = h("button", { class: "opt", role: "radio", "aria-checked": "false", onclick: () => { if (solved) return; chosen = o; btns.forEach((x) => { x.setAttribute("aria-checked", "false"); x.classList.remove("wrong"); }); b.setAttribute("aria-checked", "true"); } },
+        h("span", { class: "key", text: "→" }), h("span", { text: o.t }));
+      return b;
+    });
+    const checkBtn = h("button", { class: "btn primary", onclick: () => {
+      if (solved) return;
+      if (!chosen || !evSel.value) { out.replaceChildren(fb("note", null, "Pick a cause and the evidence that supports it.")); return; }
+      const evOk = chosen.ok ? [].concat(chosen.ev).includes(evSel.value) : false;
+      const ok = !!chosen.ok && evOk;
+      ctx.check({ choice: chosen.i, ev: evSel.value }, ok);
+      out.replaceChildren();
+      const b = btns[opts.indexOf(chosen)];
+      if (ok) {
+        solved = true; b.classList.add("correct"); checkBtn.remove(); evSel.disabled = true;
+        out.append(fb("ok", "Supported by evidence", chosen.fb), h("div", { class: "row", style: "margin-top:12px" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Add to the chain →")));
+      } else if (chosen.ok) {
+        out.append(fb("bad", "Right cause, wrong evidence", `${evSel.value === "none" ? "This cause is supported by a record." : evSel.value + " doesn't show this directly."} Which record proves it?`));
+      } else { b.classList.add("wrong"); out.append(fb("bad", "Not supported", chosen.fb)); }
+    } }, "Check");
+    return h("div", { class: "grid2" },
+      h("div", { class: "stack" },
+        h("div", { class: "panel flat" }, h("div", { class: "label", text: "Why-Why chain so far" }),
+          h("ol", { style: "margin:6px 0 0;padding-left:20px" },
+            h("li", null, h("b", { text: "Problem: " }), "CP-04 stops repeatedly (14 stops in 5 shifts)"),
+            ...chain.map((c) => h("li", null, `${c.t} `, h("span", { class: "chip info", text: c.ev }))),
+            h("li", null, h("span", { class: "muted", text: "Why? …" })))),
+        h("p", { class: "prompt", text: step.prompt }), h("div", { class: "options" }, btns),
+        h("div", { class: "field" }, h("label", { class: "label", for: "ev-" + step.id, text: "Evidence" }), evSel),
+        h("div", { class: "row" }, checkBtn), out),
+      h("div", { class: "panel flat stack" }, h("div", { class: "row" }, h("b", { text: "Evidence file" }), DWM.ui.h("span", { html: DWM.SIM })),
+        ...Object.entries(ev).map(([k, v]) => h("div", null, h("div", { class: "label", text: `${k} · ${v.t}` }), h("p", { style: "font-size:.9rem", text: v.d })))));
+  };
+
+  // Mission 3 summary assembled from the player's own decisions.
+  R.summary = (ctx) => {
+    const { step, ms, mission } = ctx;
+    const rec = ms.answers.record && ms.answers.record.values;
+    const recStep = mission.steps.find((s) => s.id === "record");
+    const nextStep = mission.steps.find((s) => s.id === "next");
+    const nextSel = (ms.answers.next && ms.answers.next.selected) || [];
+    const vals = {};
+    let solved = false;
+    const out = h("div");
+    const lines = [
+      ["Target vs actual", "12:00 checkpoint: 570 tyres vs expected 750 (plan 1,000/shift): −180, −24%, gap widening."],
+      ["Abnormality", rec ? recStep.items.map((it, i) => `${it.t.replace(/<[^>]+>/g, "")}: ${rec[i]}`).join(" · ") : "CP-04 repeated low steam-pressure stops"],
+      ["Immediate action", nextSel.length ? nextSel.map((i) => nextStep.options[i].t).join(" ") : "—"],
+      ["Owner / due date", "A-117 overdue: Maintenance Lead to report status and agree a new date at this review; escalated per ESC-MAT-01. Quality Engineer owns release of the 48 held tyres."],
+    ];
+    const selects = Object.entries(step.fields).map(([k, f]) => {
+      const s = h("select", { id: "sum-" + k, onchange: () => { vals[k] = Number(s.value); } }, h("option", { value: "" }, "Choose…"), ...f.options.map((o, i) => h("option", { value: i }, o)));
+      return h("div", { class: "field" }, h("label", { class: "label", for: "sum-" + k, text: f.label }), s);
+    });
+    const checkBtn = h("button", { class: "btn primary", onclick: () => {
+      if (solved) return;
+      const entries = Object.entries(step.fields);
+      if (entries.some(([k]) => vals[k] == null || isNaN(vals[k]))) { out.replaceChildren(fb("note", null, "Complete both fields.")); return; }
+      const ok = entries.every(([k, f]) => vals[k] === f.a);
+      ctx.check({ fields: { ...vals } }, ok);
+      out.replaceChildren();
+      if (ok) {
+        solved = true; checkBtn.remove();
+        out.append(fb("ok", "Review summary recorded", "Next review at the 14:00 checkpoint, and at every checkpoint until CP-04 is stable. RCA requested: Kabir will lead the Why-Why with Maintenance."),
+          h("div", { class: "row", style: "margin-top:12px" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Continue →")));
+      } else out.append(fb("bad", "Check again", "A repeating, live problem needs review at every checkpoint, and recurrence across shifts after resets is the signal for RCA."));
+    } }, "Confirm summary");
+    return h("div", { class: "stack" }, h("p", { class: "prompt", text: step.prompt }),
+      h("div", { class: "tablewrap" }, h("table", null, h("tbody", null, ...lines.map(([a, b]) => h("tr", null, h("th", { scope: "row", text: a }), h("td", { text: b })))))),
+      h("div", { class: "grid2" }, selects), h("div", { class: "row" }, checkBtn), out);
+  };
+
+  function renderStep(ctx) {
+    const f = R[ctx.step.type];
+    if (!f) return h("p", { text: "Unknown step type " + ctx.step.type });
+    return f(ctx);
+  }
+
+  DWM.missions = { renderStep, pointsFor };
+})();
+
+// ---- station.js ----
+// Mission 3: a walkable 2D curing department and the interactive DWM station board.
+(function () {
+  const DWM = window.DWM;
+  const { h } = DWM.ui;
+
+  const W = 960, H = 480;
+  const START = { x: 90, y: 400 };
+  const STATION = { x: 850, y: 300 };
+  const OBST = [
+    { x: 80, y: 60, w: 600, h: 105 },   // press row
+    { x: 60, y: 172, w: 660, h: 28 },   // conveyor
+    { x: 725, y: 55, w: 140, h: 120 },  // quality hold cage
+    { x: 780, y: 335, w: 150, h: 95 },  // DWM board
+    { x: 20, y: 250, w: 70, h: 60 },    // tyre-building bay
+  ];
+  const PRESSES = [0, 1, 2, 3, 4, 5].map((i) => ({ id: "CP-0" + (i + 1), x: 130 + i * 100, y: 112 }));
+
+  function collides(x, y) {
+    if (x < 14 || y < 14 || x > W - 14 || y > H - 14) return true;
+    return OBST.some((o) => x > o.x - 12 && x < o.x + o.w + 12 && y > o.y - 12 && y < o.y + o.h + 12);
+  }
+
+  function drawPerson(g, x, y, t, body, hat, label, walking) {
+    const bob = walking ? Math.sin(t / 90) * 2 : 0;
+    g.fillStyle = "rgba(0,0,0,.25)"; g.beginPath(); g.ellipse(x, y + 16, 11, 4, 0, 0, Math.PI * 2); g.fill();
+    // legs
+    g.strokeStyle = "#1b2433"; g.lineWidth = 4; g.lineCap = "round";
+    const sw = walking ? Math.sin(t / 90) * 5 : 0;
+    g.beginPath(); g.moveTo(x - 4, y + 4); g.lineTo(x - 4 + sw, y + 15); g.moveTo(x + 4, y + 4); g.lineTo(x + 4 - sw, y + 15); g.stroke();
+    g.fillStyle = body; g.beginPath(); g.roundRect(x - 9, y - 12 + bob, 18, 18, 5); g.fill();
+    g.fillStyle = "#c48c63"; g.beginPath(); g.arc(x, y - 18 + bob, 7, 0, Math.PI * 2); g.fill();
+    if (hat) { g.fillStyle = hat; g.beginPath(); g.arc(x, y - 20 + bob, 7.5, Math.PI, 0); g.fill(); g.fillRect(x - 9, y - 21 + bob, 18, 2.5); }
+    if (label) {
+      g.font = "600 11px 'IBM Plex Sans', sans-serif"; g.textAlign = "center";
+      const w = g.measureText(label).width + 10;
+      g.fillStyle = "rgba(8,17,31,.85)"; g.beginPath(); g.roundRect(x - w / 2, y - 44 + bob, w, 16, 4); g.fill();
+      g.fillStyle = "#fff"; g.fillText(label, x, y - 32 + bob);
+    }
+  }
+
+  function drawScene(g, t, st) {
+    // floor
+    g.fillStyle = "#27313f"; g.fillRect(0, 0, W, H);
+    g.strokeStyle = "rgba(255,255,255,.04)"; g.lineWidth = 1;
+    for (let x = 0; x < W; x += 40) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+    for (let y = 0; y < H; y += 40) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+    // walkway
+    g.fillStyle = "#2f3b4c"; g.fillRect(0, 222, W, 100);
+    g.strokeStyle = "#d9a62e"; g.lineWidth = 3; g.setLineDash([18, 10]);
+    g.beginPath(); g.moveTo(0, 222); g.lineTo(W, 222); g.moveTo(0, 322); g.lineTo(760, 322); g.stroke(); g.setLineDash([]);
+    g.fillStyle = "rgba(217,166,46,.6)"; g.font = "600 12px 'Barlow Condensed', sans-serif"; g.textAlign = "left";
+    g.fillText("PEDESTRIAN WALKWAY", 300, 275);
+    // area label
+    g.fillStyle = "#9fb0c8"; g.font = "600 14px 'Barlow Condensed', sans-serif";
+    g.fillText("CURING DEPARTMENT · LINE 2 (SIMULATED)", 84, 48);
+    // presses
+    PRESSES.forEach((p, i) => {
+      const fault = i === 3;
+      g.fillStyle = "#4b5a70"; g.beginPath(); g.roundRect(p.x - 42, p.y - 48, 84, 96, 6); g.fill();
+      g.fillStyle = "#5f7089"; g.beginPath(); g.arc(p.x, p.y - 4, 30, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#1c232d"; g.beginPath(); g.arc(p.x, p.y - 4, 20, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#3a4555"; g.beginPath(); g.arc(p.x, p.y - 4, 9, 0, Math.PI * 2); g.fill();
+      // andon lamp
+      const on = fault ? Math.floor(t / 400) % 2 === 0 : true;
+      g.fillStyle = fault ? (on ? "#ff5a4f" : "#5a1d1a") : "#4fd18b";
+      g.beginPath(); g.arc(p.x + 32, p.y - 38, 6, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#e8eef7"; g.font = "600 12px 'IBM Plex Mono', monospace"; g.textAlign = "center";
+      g.fillText(p.id, p.x, p.y + 40);
+      if (fault) { g.fillStyle = "#ffb1aa"; g.font = "600 11px 'IBM Plex Sans', sans-serif"; g.fillText("STOPPED · LOW STEAM PRESS.", p.x, p.y - 56); }
+    });
+    // conveyor with moving tyres
+    g.fillStyle = "#3b4658"; g.fillRect(60, 172, 660, 28);
+    g.strokeStyle = "#566377"; g.lineWidth = 1;
+    for (let x = 60; x < 720; x += 12) { g.beginPath(); g.moveTo(x, 172); g.lineTo(x, 200); g.stroke(); }
+    for (let k = 0; k < 9; k++) {
+      const x = 70 + ((k * 75 + t / 30) % 640);
+      g.fillStyle = "#121417"; g.beginPath(); g.arc(x, 186, 10, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#3a3f47"; g.beginPath(); g.arc(x, 186, 4, 0, Math.PI * 2); g.fill();
+    }
+    // quality hold cage
+    g.strokeStyle = "#e3a73a"; g.lineWidth = 2; g.setLineDash([4, 3]); g.strokeRect(725, 55, 140, 120); g.setLineDash([]);
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) { g.fillStyle = "#121417"; g.beginPath(); g.arc(752 + c * 29, 90 + r * 28, 11, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = "#b3261e"; g.fillRect(830, 60, 30, 16); g.fillStyle = "#fff"; g.font = "600 9px 'IBM Plex Mono', monospace"; g.textAlign = "center"; g.fillText("HOLD", 845, 71);
+    g.fillStyle = "#f2c46b"; g.font = "600 12px 'Barlow Condensed', sans-serif"; g.fillText("QUALITY HOLD · 48 TYRES", 795, 192);
+    // tyre-building bay
+    g.fillStyle = "#3b4658"; g.fillRect(20, 250, 70, 60); g.fillStyle = "#9fb0c8"; g.font = "600 11px 'Barlow Condensed', sans-serif"; g.fillText("BUILDING", 55, 284);
+    // DWM station
+    const near = st.near;
+    g.fillStyle = "#3a475c"; g.fillRect(780, 335, 150, 95);
+    g.fillStyle = "#0f1d33"; g.fillRect(786, 341, 138, 70);
+    g.fillStyle = "#e8eef7"; g.font = "700 15px 'Barlow Condensed', sans-serif"; g.fillText("DWM STATION", 855, 360);
+    const bars = [0.57, 0.82, 1, 0.4];
+    bars.forEach((b, i) => { g.fillStyle = b < 0.9 ? "#f07d74" : "#5cc28f"; g.fillRect(796 + i * 31, 400 - b * 30, 18, b * 30); });
+    g.fillStyle = "#6f7d92"; g.fillRect(800, 430, 6, 30); g.fillRect(904, 430, 6, 30);
+    // destination marker
+    const pulse = 18 + Math.sin(t / 250) * 4;
+    g.strokeStyle = near ? "#5cc28f" : "#e3a73a"; g.lineWidth = 3;
+    g.beginPath(); g.ellipse(STATION.x, STATION.y + 14, pulse, pulse * 0.4, 0, 0, Math.PI * 2); g.stroke();
+    if (!st.arrived) { g.fillStyle = "#e3a73a"; g.font = "600 12px 'IBM Plex Sans', sans-serif"; g.fillText("▼ Walk here", STATION.x, STATION.y - 30 + Math.sin(t / 200) * 3); }
+    // operator at CP-04
+    drawPerson(g, 430, 205 + 10, t, "#2b6cb0", "#4fd18b", null, false);
+    // Arjun and the player
+    drawPerson(g, st.ax, st.ay, t, DWM.CHARACTERS.arjun.color, "#e3a73a", "Arjun", st.aMoving);
+    drawPerson(g, st.x, st.y, t, "#13284a", "#f2f5fa", "You", st.moving);
+    if (st.target && !st.arrived) { g.strokeStyle = "rgba(255,255,255,.35)"; g.setLineDash([3, 4]); g.beginPath(); g.moveTo(st.x, st.y); g.lineTo(st.target.x, st.target.y); g.stroke(); g.setLineDash([]); }
+  }
+
+  // Mounts the walk scene. Calls onArrive() once when the player reaches the station.
+  function mountWalk(container, onArrive) {
+    const reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canvas = h("canvas", { width: W, height: H, role: "img", tabindex: "0",
+      "aria-label": "Top-down view of the curing department. Six curing presses; CP-04 is stopped with a flashing red lamp. A quality hold cage holds 48 tyres. The DWM station board stands beside the walkway on the right. Use arrow keys or WASD to walk, click or tap a spot to walk there, or use the Walk to the DWM station button." });
+    const tip = h("div", { class: "scene-tip", role: "status", text: "Walk to the DWM STATION (right). Arrow keys / WASD, or click or tap the floor." });
+    const dpad = h("div", { class: "dpad", "aria-hidden": "true" });
+    const keys = new Set();
+    const hold = (k) => ({ onpointerdown: (e) => { e.preventDefault(); keys.add(k); }, onpointerup: () => keys.delete(k), onpointerleave: () => keys.delete(k), onpointercancel: () => keys.delete(k) });
+    dpad.append(h("span"), h("button", { ...hold("up"), "aria-label": "Up" }, "▲"), h("span"), h("button", { ...hold("left"), "aria-label": "Left" }, "◀"), h("button", { ...hold("down"), "aria-label": "Down" }, "▼"), h("button", { ...hold("right"), "aria-label": "Right" }, "▶"));
+    const autoBtn = h("button", { class: "btn accent small", onclick: () => { st.target = { ...STATION }; canvas.focus(); } }, "Walk to the DWM station");
+    const wrap = h("div", { class: "scene-wrap" }, canvas, h("div", { class: "scene-hud" }, h("div", { class: "row", style: "gap:8px" }, autoBtn, tip), dpad));
+    container.append(wrap);
+
+    const st = { x: START.x, y: START.y, ax: START.x - 34, ay: START.y + 6, target: null, moving: false, aMoving: false, near: false, arrived: false };
+    const g = canvas.getContext("2d");
+    const KEYMAP = { ArrowUp: "up", KeyW: "up", ArrowDown: "down", KeyS: "down", ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right" };
+    const kd = (e) => { const k = KEYMAP[e.code]; if (k && document.activeElement === canvas) { keys.add(k); st.target = null; e.preventDefault(); } };
+    const ku = (e) => { const k = KEYMAP[e.code]; if (k) keys.delete(k); };
+    window.addEventListener("keydown", kd); window.addEventListener("keyup", ku);
+    canvas.addEventListener("pointerdown", (e) => {
+      const r = canvas.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * W, y = ((e.clientY - r.top) / r.height) * H;
+      // Clicking the board or its marker walks to the station.
+      const onBoard = x > 760 && y > 270;
+      st.target = onBoard ? { ...STATION } : { x, y };
+      canvas.focus();
+    });
+
+    let last = performance.now(), raf;
+    function step(now) {
+      if (!canvas.isConnected) { window.removeEventListener("keydown", kd); window.removeEventListener("keyup", ku); return; }
+      const dt = Math.min(50, now - last); last = now;
+      const sp = 0.22 * dt;
+      let dx = 0, dy = 0;
+      if (keys.size) { if (keys.has("up")) dy -= 1; if (keys.has("down")) dy += 1; if (keys.has("left")) dx -= 1; if (keys.has("right")) dx += 1; st.target = null; }
+      else if (st.target) { dx = st.target.x - st.x; dy = st.target.y - st.y; const d = Math.hypot(dx, dy); if (d < 3) { st.target = null; dx = dy = 0; } }
+      const len = Math.hypot(dx, dy);
+      st.moving = false;
+      if (len > 0 && !st.arrived) {
+        const mx = (dx / len) * Math.min(sp, st.target ? len : sp), my = (dy / len) * Math.min(sp, st.target ? len : sp);
+        if (!collides(st.x + mx, st.y + my)) { st.x += mx; st.y += my; st.moving = true; }
+        else if (!collides(st.x + mx, st.y)) { st.x += mx; st.moving = true; }
+        else if (!collides(st.x, st.y + my)) { st.y += my; st.moving = true; }
+        else st.target = null;
+      }
+      // Arjun follows
+      const fx = st.x - 34 - st.ax, fy = st.y + 6 - st.ay, fd = Math.hypot(fx, fy);
+      st.aMoving = fd > 4;
+      if (st.aMoving) { const k = Math.min(1, (0.18 * dt) / fd); st.ax += fx * k; st.ay += fy * k; }
+      st.near = Math.hypot(st.x - STATION.x, st.y - STATION.y) < 46;
+      if (st.near && !st.arrived) {
+        st.arrived = true; tip.textContent = "You have arrived at the DWM station.";
+        setTimeout(onArrive, reduced ? 50 : 500);
+      }
+      drawScene(g, reduced ? 0 : now, st);
+      raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+    return { destroy() { cancelAnimationFrame(raf); wrap.remove(); } };
+  }
+
+  // The board with hotspots A–H. `required` are highlighted; opening one calls onSeen(id).
+  function board(mission, seen, required, onSeen) {
+    const B = mission.board;
+    const detail = h("div", { class: "board-detail", "aria-live": "polite" }, h("p", { class: "muted", style: "color:#9fb4d4", text: "Select a board section to open it." }));
+    const grid = h("div", { class: "hotspots" });
+    const btns = {};
+    Object.entries(B).forEach(([k, s]) => {
+      const b = h("button", { class: "hs" + (s.alert ? " alert" : "") + (seen.includes(k) ? " seen" : "") + (required.includes(k) && !seen.includes(k) ? " req" : ""),
+        "aria-label": `Board section ${k}: ${s.t}. ${s.v}`, onclick: () => open(k) },
+        h("span", { class: "tag", text: k }), h("span", { class: "t", text: s.t }), h("span", { class: "v", text: s.v }));
+      btns[k] = b; grid.append(b);
+    });
+    function open(k) {
+      detail.innerHTML = B[k].html;
+      Object.values(btns).forEach((b) => b.removeAttribute("aria-current"));
+      btns[k].setAttribute("aria-current", "true");
+      btns[k].classList.add("seen"); btns[k].classList.remove("req");
+      onSeen(k);
+    }
+    return { el: h("div", { class: "board" }, h("div", { class: "board-title" }, h("b", { text: "DWM STATION · CURING LINE 2 · SHIFT A" }), h("span", { class: "sim", text: "SIMULATED · 12:05" })), grid, detail), open };
+  }
+
+  DWM.station = { mountWalk, board };
+})();
+
+// ---- assessment.js ----
+// Final certification assessment: 15 questions, attempt records, scoring and eligibility.
+(function () {
+  const DWM = window.DWM;
+  const { h, confirmBox, toast } = DWM.ui;
+  const L = DWM.logic;
+  const C = DWM.CONFIG;
+
+  const bank = () => DWM.QUESTION_BANK;
+  const qById = (id) => bank().questions.find((q) => q.id === id);
+
+  function newAttempt() {
+    const qs = bank().questions.slice(0, C.questionCount);
+    return {
+      attemptId: L.newId("att"),
+      assessmentVersion: bank().version,
+      startedAt: new Date().toISOString(),
+      questions: qs.map((q) => ({ id: q.id, opts: C.shuffleOptions ? L.shuffle(q.options.map((o) => o.id)) : q.options.map((o) => o.id) })),
+      answers: {},
+      cur: 0,
+    };
+  }
+
+  // app: { profile, state, commit(meaningful), go(screen, arg) }
+  function render(root, app) {
+    const st = app.state;
+    if (!st.assessment) { st.assessment = newAttempt(); app.commit(true); }
+    const A = st.assessment;
+    st.checkpoint = { screen: "assessment", label: "Certification assessment" };
+    const total = A.questions.length;
+    const wrap = h("div", { class: "stack" });
+    root.replaceChildren(wrap);
+    let submitting = false;
+
+    function draw() {
+      const item = A.questions[A.cur];
+      const q = qById(item.id);
+      const answered = Object.keys(A.answers).length;
+      const nav = h("div", { class: "qnav", role: "navigation", "aria-label": "Questions" }, ...A.questions.map((x, i) =>
+        h("button", { class: (A.answers[x.id] ? "answered " : "") + (i === A.cur ? "cur" : ""), "aria-label": `Question ${i + 1}${A.answers[x.id] ? ", answered" : ""}`, onclick: () => { A.cur = i; draw(); } }, String(i + 1))));
+      const opts = h("div", { class: "options", role: "radiogroup", "aria-labelledby": "qtext" }, ...item.opts.map((oid, k) => {
+        const o = q.options.find((x) => x.id === oid);
+        return h("button", { class: "opt", role: "radio", "aria-checked": String(A.answers[q.id] === oid), onclick: () => {
+          A.answers[q.id] = oid; app.commit(true); draw();
+        } }, h("span", { class: "key", text: String.fromCharCode(65 + k) }), h("span", { text: o.t }));
+      }));
+      wrap.replaceChildren(
+        h("div", { class: "mission-head" }, h("div", null, h("div", { class: "label", text: `Certification assessment · ${A.assessmentVersion}` }), h("h2", { text: `Question ${A.cur + 1} of ${total}` })),
+          h("span", { class: "chip info", text: `${answered}/${total} answered` })),
+        h("div", { class: "progress", "aria-hidden": "true" }, h("i", { style: `width:${(answered / total) * 100}%` })),
+        nav,
+        h("div", { class: "panel stack" }, q.scenario ? h("span", { class: "chip warn", style: "align-self:flex-start", text: "Scenario" }) : null,
+          h("p", { class: "prompt", id: "qtext", text: q.text }), opts),
+        h("div", { class: "row", style: "justify-content:space-between" },
+          h("div", { class: "row" },
+            h("button", { class: "btn", disabled: A.cur === 0, onclick: () => { A.cur--; draw(); } }, "← Previous"),
+            h("button", { class: "btn", disabled: A.cur === total - 1, onclick: () => { A.cur++; draw(); } }, "Next →")),
+          h("div", { class: "row" },
+            h("button", { class: "btn ghost", onclick: () => app.go("hub") }, "Save and exit"),
+            h("button", { class: "btn primary", onclick: submit }, "Review and submit"))),
+        h("p", { class: "muted", style: "font-size:.85rem", text: `Pass mark ${C.passPercent}% (${Math.ceil((C.passPercent / 100) * total)} of ${total}). Your answers are saved as you go; you can leave and resume this attempt.` }));
+    }
+
+    async function submit() {
+      if (submitting) return;
+      const answered = Object.keys(A.answers).length;
+      const ok = await confirmBox({ title: "Submit your assessment?", ok: "Submit",
+        body: answered < total ? `You have answered ${answered} of ${total}. Unanswered questions are marked incorrect.` : `All ${total} questions answered. You can't change answers after submitting.` });
+      if (!ok || submitting) return;
+      submitting = true;
+      wrap.querySelectorAll("button").forEach((b) => (b.disabled = true));
+      try {
+        const result = await finalise(app, A);
+        app.go("results", result);
+      } catch (e) {
+        submitting = false;
+        wrap.querySelectorAll("button").forEach((b) => (b.disabled = false));
+        toast("Submission was not saved. Check your connection and select Review and submit again.");
+      }
+    }
+    draw();
+  }
+
+  // Score, write the attempt record (idempotent by attemptId), then update the participant record.
+  async function finalise(app, A) {
+    const qs = A.questions.map((x) => qById(x.id));
+    const r = L.scoreAttempt(qs, A.answers, bank().salt);
+    const missionsDone = L.allMissionsDone(app.state);
+    const el = L.eligibility({ scorePct: r.scorePct, passPercent: C.passPercent, missionsDone, requireAllMissions: C.requireAllMissions });
+    const p = app.profile;
+    const attempt = {
+      attemptId: A.attemptId, employeeId: p.employeeId, employeeName: p.employeeName, email: p.email,
+      assessmentVersion: A.assessmentVersion, startedAt: A.startedAt, submittedAt: new Date().toISOString(),
+      scorePct: r.scorePct, correct: r.correct, incorrect: r.incorrect, total: r.total,
+      passed: el.passed, eligibleAtAttempt: el.eligible, wrongAreas: r.wrongAreas, answers: { ...A.answers },
+    };
+    const saved = await DWM.store.saveAttempt(attempt);
+    applyAttempt(app, saved.attempt);
+    return { attempt: saved.attempt, perQuestion: r.perQuestion };
+  }
+
+  // Also used on load to reconcile an attempt that was written before the profile update was saved.
+  function applyAttempt(app, att) {
+    const p = app.profile;
+    p.attemptHistory = p.attemptHistory || [];
+    if (!p.attemptHistory.some((x) => x.attemptId === att.attemptId)) {
+      p.attemptHistory.push({ attemptId: att.attemptId, assessmentVersion: att.assessmentVersion, startedAt: att.startedAt, submittedAt: att.submittedAt,
+        scorePct: att.scorePct, correct: att.correct, incorrect: att.incorrect, passed: att.passed, eligibleAtAttempt: att.eligibleAtAttempt, wrongAreas: att.wrongAreas });
+    }
+    p.assessmentAttempts = p.attemptHistory.length;
+    p.latestScorePct = att.scorePct;
+    const anyPass = p.attemptHistory.some((x) => x.passed);
+    p.assessmentStatus = att.passed ? "Passed" : anyPass ? "Passed (earlier attempt)" : "Not yet passed";
+    const el = L.eligibility({ scorePct: Math.max(...p.attemptHistory.map((x) => x.scorePct)), passPercent: C.passPercent, missionsDone: L.allMissionsDone(app.state), requireAllMissions: C.requireAllMissions });
+    p.eligible = el.eligible;
+    p.recommended = att.wrongAreas.map((a) => DWM.LEARNING_AREAS[a].label);
+    if (app.state.assessment && app.state.assessment.attemptId === att.attemptId) app.state.assessment = null;
+    app.state.lastResultId = att.attemptId;
+    app.state.checkpoint = { screen: "results", label: "Assessment results" };
+    app.commit(true);
+  }
+
+  function renderResults(root, app, data) {
+    const p = app.profile;
+    const att = data && data.attempt ? data.attempt : (p.attemptHistory || []).slice(-1)[0];
+    if (!att) { app.go("hub"); return; }
+    const per = data && data.perQuestion;
+    const passed = att.passed, eligible = p.eligible;
+    const areas = (att.wrongAreas || []).map((a) => DWM.LEARNING_AREAS[a]);
+    const used = p.assessmentAttempts || 0;
+    const canRetake = L.attemptsAllowed(C.maxAttempts, used);
+    root.replaceChildren(h("div", { class: "stack" },
+      h("div", null, h("div", { class: "label", text: "Assessment results" }), h("h2", { text: passed ? "Assessment passed" : "Assessment not passed" })),
+      h("div", { class: "panel scoreband" },
+        h("div", null, h("div", { class: "bignum mono", text: `${att.scorePct}%` }), h("div", { class: "muted", text: `${att.correct} correct · ${att.incorrect} incorrect · of ${att.total}` })),
+        h("div", { class: "stack", style: "gap:6px;flex:1;min-width:240px" },
+          h("span", { class: "chip " + (passed ? "ok" : "bad"), style: "align-self:flex-start", text: passed ? `Pass (≥ ${C.passPercent}%)` : `Below ${C.passPercent}%` }),
+          h("div", { class: "verdict", text: eligible ? "Eligible for Certification" : "Not Yet Eligible" }),
+          h("p", { text: eligible ? "You have met the configured learning assessment criteria." : "Review the recommended learning areas and attempt the assessment again according to the assessment policy." }),
+          h("p", { class: "muted", style: "font-size:.85rem", text: "This is a record of learning eligibility only. No official certificate is issued by this game." }))),
+      areas.length ? h("div", { class: "panel stack" }, h("h3", { text: "Recommended learning areas" }),
+        h("ul", { style: "margin:0;padding-left:20px" }, ...areas.map((a) => h("li", null, `${a.label}: `, h("button", { class: "btn small ghost", onclick: () => app.go("mission", { id: a.mission, replay: true }) }, `Replay Mission ${a.mission.slice(1)}`))))) : null,
+      per ? h("div", { class: "panel stack" }, h("h3", { text: "Question feedback" }),
+        ...per.map((x, i) => { const q = qById(x.id); return h("div", { class: "feedback " + (x.correct ? "ok" : "bad") }, h("b", { text: `${i + 1}. ${x.correct ? "Correct" : "Incorrect"}: ${DWM.LEARNING_AREAS[q.area].label}` }), h("span", { text: q.explain })); })) : null,
+      h("div", { class: "row" },
+        h("button", { class: "btn primary", onclick: () => app.go("hub") }, "Back to Mission Hub"),
+        !passed && canRetake && L.allMissionsDone(app.state) ? h("button", { class: "btn", onclick: () => app.go("assessment") }, `Retake assessment (${C.maxAttempts ? `${C.maxAttempts - used} left` : "unlimited"})`) : null),
+      !passed && !canRetake ? h("p", { class: "feedback note", text: `You have used all ${C.maxAttempts} attempts. Contact the TQM cell (${C.ownerContactEmail}) about next steps.` }) : null));
+  }
+
+  DWM.assessment = { render, renderResults, applyAttempt };
+})();
+
+// ---- admin.js ----
+// Owner dashboard. The real protection is server-side: the database rules make the participants
+// collection readable only by the artifact owner. This screen is only shown to isOwner() viewers.
+(function () {
+  const DWM = window.DWM;
+  const { h, fmtDate, fmtDur, toast } = DWM.ui;
+  const L = DWM.logic;
+
+  const status = (p) => (p.gameCompletedAt ? "Completed" : "In progress");
+  const passState = (p) => (!p.assessmentAttempts ? "No attempt" : (p.attemptHistory || []).some((a) => a.passed) ? "Passed" : "Not passed");
+
+  // Synthetic records for demo mode only. Fictional people, clearly labelled.
+  function demoRecords() {
+    const now = Date.now(), day = 864e5;
+    const mk = (i, missions, attempts) => {
+      const start = new Date(now - (10 - i) * day).toISOString();
+      const hist = attempts.map((s, k) => ({ attemptId: `demo-att-${i}-${k}`, assessmentVersion: "DWM-A-2026.1", startedAt: start, submittedAt: new Date(now - (9 - i) * day + k * 3600e3).toISOString(), scorePct: s, correct: Math.round(s * 0.15), incorrect: 15 - Math.round(s * 0.15), passed: s >= 80, eligibleAtAttempt: s >= 80 && missions === 6, wrongAreas: s < 100 ? ["whywhy", "frequency"].slice(0, s < 80 ? 2 : 1) : [] }));
+      const passed = hist.some((x) => x.passed);
+      return { uid: "demo-" + i, demo: true, employeeId: `DEMO-${String(100 + i)}`, employeeName: `Demo Employee ${String(i).padStart(2, "0")}`, email: `demo.employee${i}@example.com`,
+        gameStartAt: start, gameCompletedAt: missions === 6 && hist.length ? hist[hist.length - 1].submittedAt : null, currentMission: missions === 6 ? "Assessment" : `Mission ${missions + 1}`,
+        progressPct: Math.round(((missions + (hist.length ? 1 : 0)) / 7) * 100), latestScorePct: hist.length ? hist[hist.length - 1].scorePct : null, assessmentAttempts: hist.length,
+        assessmentStatus: !hist.length ? "Not started" : passed ? "Passed" : "Not yet passed", eligible: passed && missions === 6, lastActivityAt: new Date(now - i * 3600e3).toISOString(),
+        totalTimeSec: 600 + i * 97, createdAt: start, updatedAt: start, attemptHistory: hist, recommended: [], missionLog: [] };
+    };
+    return [mk(1, 6, [93.3]), mk(2, 6, [73.3, 86.7]), mk(3, 4, []), mk(4, 6, [66.7]), mk(5, 2, []), mk(6, 6, [100])];
+  }
+
+  async function render(root, app) {
+    const S = DWM.store.S;
+    root.replaceChildren(h("p", { text: "Loading results…" }));
+    let rows, demo = S.mode !== "central";
+    if (!demo && !S.isOwner) {
+      root.replaceChildren(h("div", { class: "panel stack" }, h("h2", { text: "Results dashboard" }), h("p", { text: "Only the owner of this game can view all results." }), h("button", { class: "btn", onclick: () => app.go("hub") }, "Back")));
+      return;
+    }
+    try {
+      rows = demo ? [...demoRecords(), ...(app.profile ? [{ uid: "local", ...app.profile }] : [])] : await DWM.store.listParticipants();
+    } catch (e) {
+      root.replaceChildren(h("div", { class: "panel stack" }, h("h2", { text: "Results dashboard" }), h("p", { class: "feedback bad", text: "The results could not be loaded. Check your connection and try again." }), h("button", { class: "btn", onclick: () => render(root, app) }, "Retry")));
+      return;
+    }
+    if (!demo) DWM.store.logAudit("dashboard_view", `${rows.length} records`);
+
+    const F = { q: "", from: "", to: "", status: "", pass: "", elig: "" };
+    const kpi = (label, n, cls) => h("div", { class: "kpi" }, h("span", { class: "label", text: label }), h("b", { class: cls || "", text: String(n) }));
+    const filtered = () => rows.filter((p) => {
+      const q = F.q.trim().toLowerCase();
+      if (q && ![p.employeeId, p.employeeName, p.email].some((v) => String(v || "").toLowerCase().includes(q))) return false;
+      if (F.from && (!p.gameStartAt || p.gameStartAt.slice(0, 10) < F.from)) return false;
+      if (F.to && (!p.gameStartAt || p.gameStartAt.slice(0, 10) > F.to)) return false;
+      if (F.status && status(p) !== F.status) return false;
+      if (F.pass && passState(p) !== F.pass) return false;
+      if (F.elig && String(!!p.eligible) !== F.elig) return false;
+      return true;
+    });
+
+    const kpis = h("div", { class: "kpis" });
+    const tbody = h("tbody");
+    const detail = h("div");
+    const countEl = h("span", { class: "muted" });
+    function drawKpis() {
+      const started = rows.length, completed = rows.filter((p) => p.gameCompletedAt).length;
+      kpis.replaceChildren(kpi("Started", started), kpi("In progress", started - completed), kpi("Completed", completed),
+        kpi("Passed", rows.filter((p) => passState(p) === "Passed").length), kpi("Eligible", rows.filter((p) => p.eligible).length),
+        kpi("Need retake", rows.filter((p) => passState(p) === "Not passed").length));
+    }
+    function drawTable() {
+      const list = filtered();
+      countEl.textContent = `${list.length} of ${rows.length} participants`;
+      tbody.replaceChildren(...list.map((p) => h("tr", { tabindex: "0", onclick: () => showDetail(p), onkeydown: (e) => { if (e.key === "Enter") showDetail(p); } },
+        h("td", { class: "mono", text: p.employeeId || "—" }), h("td", { text: p.employeeName || "—" }), h("td", { text: p.email || "—" }),
+        h("td", { text: fmtDate(p.gameStartAt) }), h("td", { text: fmtDate(p.gameCompletedAt) }),
+        h("td", { class: "num", text: p.latestScorePct == null ? "—" : p.latestScorePct + "%" }),
+        h("td", null, h("span", { class: "chip " + (p.eligible ? "ok" : "bad"), text: p.eligible ? "Yes" : "No" })),
+        h("td", { class: "num", text: (p.progressPct || 0) + "%" }))));
+      if (!list.length) tbody.append(h("tr", null, h("td", { colspan: "8", class: "muted", text: rows.length ? "No participants match these filters." : "No participants yet. Records appear here as employees register." })));
+    }
+    async function showDetail(p) {
+      const hist = p.attemptHistory || [];
+      const ms = p.state && p.state.missions;
+      detail.replaceChildren(h("div", { class: "panel stack" },
+        h("div", { class: "row", style: "justify-content:space-between" }, h("h3", { text: `${p.employeeName} · ${p.employeeId}` }), h("button", { class: "btn small", onclick: () => detail.replaceChildren() }, "Close")),
+        h("div", { class: "grid2" },
+          h("div", null, h("div", { class: "label", text: "Profile" }), h("p", null, `Email: ${p.email}`), h("p", null, `Started: ${fmtDate(p.gameStartAt)}`), h("p", null, `Completed: ${fmtDate(p.gameCompletedAt)}`),
+            h("p", null, `Last activity: ${fmtDate(p.lastActivityAt)}`), h("p", null, `Time spent: ${fmtDur(p.totalTimeSec)}`), h("p", null, `Current: ${p.currentMission} · progress ${p.progressPct || 0}%`),
+            h("p", null, `Eligible for certification: ${p.eligible ? "Yes" : "No"}`)),
+          h("div", null, h("div", { class: "label", text: "Mission history" }),
+            ms ? h("ul", { style: "margin:4px 0;padding-left:18px" }, ...DWM.MISSIONS.map((m) => { const x = ms[m.id] || {}; return h("li", null, `M${m.n} ${m.title}: ${x.status || "locked"}${x.completedAt ? " · " + fmtDate(x.completedAt) : ""}${x.points ? " · " + x.points + " pts" : ""}`); }))
+              : h("p", { class: "muted", text: "Synthetic demo record." }),
+            h("div", { class: "label", text: "Recommended learning areas" }), h("p", { text: (p.recommended || []).join(", ") || "—" }))),
+        h("div", { class: "label", text: "Assessment attempts" }),
+        h("div", { class: "tablewrap" }, h("table", null, h("thead", null, h("tr", null, ...["#", "Attempt ID", "Version", "Submitted", "Score", "Correct", "Result", "Eligible at attempt"].map((x) => h("th", { text: x })))),
+          h("tbody", null, ...(hist.length ? hist.map((a, i) => h("tr", null, h("td", { text: String(i + 1) }), h("td", { class: "mono", text: a.attemptId }), h("td", { text: a.assessmentVersion }), h("td", { text: fmtDate(a.submittedAt) }),
+            h("td", { class: "num", text: a.scorePct + "%" }), h("td", { class: "num", text: `${a.correct}/${a.correct + a.incorrect}` }), h("td", { text: a.passed ? "Pass" : "Fail" }), h("td", { text: a.eligibleAtAttempt ? "Yes" : "No" })))
+            : [h("tr", null, h("td", { colspan: "8", class: "muted", text: "No attempts yet." }))]))))));
+      detail.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function exportCSV(kind, list) {
+      let csv, name;
+      const stamp = new Date().toISOString().slice(0, 10);
+      if (kind === "summary") {
+        csv = L.toCSV(["Employee ID", "Employee Name", "Email ID", "Game Start (UTC)", "Game Completion (UTC)", "Current Mission", "Progress %", "Latest Score %", "Assessment Attempts", "Assessment Status", "Eligible for Certification", "Last Activity (UTC)", "Total Time (min)", "Record Created (UTC)", "Record Updated (UTC)"],
+          list.map((p) => [p.employeeId, p.employeeName, p.email, p.gameStartAt, p.gameCompletedAt || "", p.currentMission, p.progressPct, p.latestScorePct ?? "", p.assessmentAttempts || 0, p.assessmentStatus, p.eligible ? "Yes" : "No", p.lastActivityAt, Math.round((p.totalTimeSec || 0) / 60), p.createdAt, p.updatedAt]));
+        name = `dwm-quest-results-${stamp}.csv`;
+      } else {
+        const out = [];
+        list.forEach((p) => (p.attemptHistory || []).forEach((a, i) => out.push([a.attemptId, p.employeeId, p.employeeName, p.email, i + 1, a.assessmentVersion, a.startedAt, a.submittedAt, a.scorePct, a.correct, a.incorrect, a.passed ? "Pass" : "Fail", a.eligibleAtAttempt ? "Yes" : "No", (a.wrongAreas || []).map((w) => DWM.LEARNING_AREAS[w] ? DWM.LEARNING_AREAS[w].label : w).join("; ")])));
+        csv = L.toCSV(["Attempt ID", "Employee ID", "Employee Name", "Email ID", "Attempt #", "Assessment Version", "Started (UTC)", "Submitted (UTC)", "Score %", "Correct", "Incorrect", "Result", "Eligible at Attempt", "Areas to review"], out);
+        name = `dwm-quest-attempts-${stamp}.csv`;
+      }
+      if (demo) name = name.replace("dwm-quest", "DEMO-dwm-quest");
+      const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if (dl) {
+        try { await dl.save({ filename: name, data: csv }); if (!demo) DWM.store.logAudit("export_" + kind, `${list.length} participants`); toast("Export saved."); return; }
+        catch (e) { if (e && e.code === "declined") { toast("Export cancelled."); return; } }
+      }
+      // Fallback for copies running outside claude.ai.
+      try {
+        const a = h("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: name });
+        document.body.append(a); a.click(); a.remove();
+        toast("Export started.");
+      } catch { toast("Download is not available in this view."); }
+    }
+
+    const field = (label, ctl) => h("div", { class: "field" }, h("label", { class: "label", for: ctl.id, text: label }), ctl);
+    const inp = (id, type, key, ph) => h("input", { id, type, placeholder: ph || "", oninput: (e) => { F[key] = e.target.value; drawTable(); } });
+    const sel = (id, key, opts) => h("select", { id, onchange: (e) => { F[key] = e.target.value; drawTable(); } }, ...opts.map(([v, t]) => h("option", { value: v }, t)));
+
+    drawKpis();
+    root.replaceChildren(h("div", { class: "stack" },
+      h("div", { class: "mission-head" }, h("div", null, h("div", { class: "label", text: "Owner only" }), h("h2", { text: "Results dashboard" })),
+        h("div", { class: "row" }, h("button", { class: "btn", onclick: () => render(root, app) }, "Refresh"), h("button", { class: "btn", onclick: () => app.go("hub") }, "Back to game"))),
+      demo ? h("p", { class: "feedback note", text: "DEMO DATA: these are synthetic records plus this browser's own test record. No real employee data is shown or stored in demo mode." }) : null,
+      kpis,
+      h("div", { class: "panel stack" },
+        h("div", { class: "filters" },
+          field("ID, name or email", inp("f-q", "search", "q", "Search…")),
+          field("Started from", inp("f-from", "date", "from")), field("Started to", inp("f-to", "date", "to")),
+          field("Progress", sel("f-status", "status", [["", "All"], ["In progress", "In progress"], ["Completed", "Completed"]])),
+          field("Assessment", sel("f-pass", "pass", [["", "All"], ["Passed", "Passed"], ["Not passed", "Not passed"], ["No attempt", "No attempt"]])),
+          field("Eligibility", sel("f-elig", "elig", [["", "All"], ["true", "Eligible"], ["false", "Not eligible"]]))),
+        h("div", { class: "row", style: "justify-content:space-between" }, countEl,
+          h("div", { class: "row" },
+            h("button", { class: "btn small", onclick: () => exportCSV("summary", rows) }, "Export all results (CSV)"),
+            h("button", { class: "btn small", onclick: () => exportCSV("summary", filtered()) }, "Export filtered (CSV)"),
+            h("button", { class: "btn small", onclick: () => exportCSV("attempts", rows) }, "Export all attempts (CSV)"))),
+        h("div", { class: "tablewrap" }, h("table", { class: "results" },
+          h("thead", null, h("tr", null, ...["Employee ID", "Employee Name", "Email ID", "Start Date", "Completion Date", "Score %", "Eligibility", "Progress"].map((x) => h("th", { class: /Score|Progress/.test(x) ? "num" : "", text: x })))), tbody))),
+      detail,
+      h("p", { class: "muted", style: "font-size:.82rem", text: "Times shown in your local time zone; CSV exports use UTC (ISO 8601). Select a row for the employee's mission history and every assessment attempt." })));
+    drawTable();
+  }
+
+  DWM.admin = { render };
+})();
+
+// ---- app.js ----
+// App shell: boot, screens, autosave, time tracking and the mission controller.
+(function () {
+  const DWM = window.DWM;
+  const { h, dialogue, toast, fmtDate, focusMain } = DWM.ui;
+  const L = DWM.logic;
+  const C = DWM.CONFIG;
+  const Store = DWM.store;
+
+  const app = { profile: null, state: null, screen: null };
+  const root = () => document.getElementById("app");
+
+  // ---------------- save / derived fields ----------------
+  function derive() {
+    const p = app.profile, st = app.state;
+    p.state = st;
+    p.currentMission = L.currentMission(st);
+    p.progressPct = L.progressPct(st, p.assessmentAttempts || 0);
+    p.missionsCompleted = L.missionsCompleted(st);
+    p.points = L.totalPoints(st);
+    if (!p.gameCompletedAt && L.allMissionsDone(st) && (p.assessmentAttempts || 0) > 0) {
+      // First time every mandatory activity is complete. Never overwritten afterwards.
+      p.gameCompletedAt = new Date().toISOString();
+    }
+    if (p.assessmentAttempts && p.attemptHistory) {
+      const best = Math.max(...p.attemptHistory.map((x) => x.scorePct));
+      p.eligible = L.eligibility({ scorePct: best, passPercent: C.passPercent, missionsDone: L.allMissionsDone(st), requireAllMissions: C.requireAllMissions }).eligible;
+    }
+  }
+  app.commit = function (meaningful) {
+    if (!app.profile) return;
+    flushTime();
+    derive();
+    const now = new Date().toISOString();
+    app.profile.updatedAt = now;
+    if (meaningful) app.profile.lastActivityAt = now;
+    Store.saveProfile(app.profile);
+  };
+
+  // Active time: counts seconds while the page is visible and the player interacted in the last 2 minutes.
+  let lastInput = Date.now(), activeAcc = 0, lastTick = Date.now();
+  ["pointerdown", "keydown", "scroll"].forEach((ev) => window.addEventListener(ev, () => (lastInput = Date.now()), { passive: true }));
+  setInterval(() => {
+    const now = Date.now();
+    if (document.visibilityState === "visible" && now - lastInput < 120000) activeAcc += (now - lastTick) / 1000;
+    lastTick = now;
+  }, 1000);
+  function flushTime() { if (app.profile && activeAcc >= 1) { app.profile.totalTimeSec = Math.round((app.profile.totalTimeSec || 0) + activeAcc); activeAcc = 0; } }
+  setInterval(() => { if (app.profile && activeAcc >= 5) app.commit(false); }, C.periodicSaveSeconds * 1000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && app.profile && activeAcc >= 1) app.commit(false); });
+
+  // ---------------- top bar ----------------
+  function topbar() {
+    const pill = h("span", { class: "save-pill", role: "status", "aria-live": "polite" }, h("span", { class: "dot" }), h("span", { class: "txt" }));
+    Store.onStatus((s) => {
+      pill.dataset.state = s.state;
+      pill.querySelector(".txt").textContent = app.profile ? s.text : "Not registered";
+      pill.querySelector("button")?.remove();
+      if (s.state === "error") pill.append(h("button", { onclick: () => Store.retry() }, "Retry"));
+    });
+    const bar = h("header", { class: "topbar" }, h("div", { class: "topbar-inner" },
+      h("div", { class: "brand" }, h("b", { text: "DWM QUEST" }), h("span", { text: "The Daily Excellence Challenge" })),
+      h("div", { class: "spacer" }), pill,
+      h("button", { class: "tb-btn", id: "tb-hub", hidden: true, onclick: () => go("hub") }, "Mission Hub")));
+    document.body.prepend(bar);
+  }
+  function modeBanner() {
+    const S = Store.S;
+    const b = h("div", { class: "mode-banner " + (S.mode === "central" ? "central" : "") }, h("div", null,
+      S.mode === "central"
+        ? "Your progress is saved to the central results store under your claude.ai sign-in. You can close this page and resume later, on any device."
+        : `DEMO MODE: ${S.reason || ""} Progress is kept in this browser only. Do not use demo mode for real employee records.`));
+    document.querySelector(".topbar").after(b);
+  }
+
+  // ---------------- routing ----------------
+  function go(screen, arg) {
+    app.screen = screen;
+    document.getElementById("tb-hub").hidden = !app.profile || screen === "hub" || screen === "welcome";
+    const r = root();
+    r.replaceChildren();
+    ({ welcome, register, resume, hub, mission: missionScreen, assessment: assessmentScreen, results, admin, error: errorScreen })[screen](r, arg);
+    focusMain();
+  }
+  app.go = go;
+
+  // ---------------- screens ----------------
+  function heroArt() {
+    const c = h("canvas", { width: 520, height: 300, "aria-hidden": "true" });
+    const g = c.getContext("2d");
+    g.fillStyle = "#0c1a31"; g.fillRect(0, 0, 520, 300);
+    // board silhouette with bars: plan vs actual
+    g.fillStyle = "#13284a"; g.fillRect(40, 40, 300, 200);
+    g.strokeStyle = "#2a3d5c"; g.strokeRect(40, 40, 300, 200);
+    g.fillStyle = "#9fb4d4"; g.font = "600 13px 'IBM Plex Sans', sans-serif"; g.fillText("PLAN vs ACTUAL (SIMULATED)", 56, 64);
+    const plan = [250, 500, 750], act = [220, 390, 570];
+    plan.forEach((p, i) => {
+      const x = 70 + i * 90;
+      g.fillStyle = "#3a4d6d"; g.fillRect(x, 220 - p / 4.4, 26, p / 4.4);
+      g.fillStyle = act[i] / p < 0.95 ? "#f07d74" : "#5cc28f"; g.fillRect(x + 30, 220 - act[i] / 4.4, 26, act[i] / 4.4);
+      g.fillStyle = "#c8d5ea"; g.font = "12px 'IBM Plex Mono', monospace"; g.fillText(["08:00", "10:00", "12:00"][i], x + 6, 236);
+    });
+    // tyre
+    g.fillStyle = "#06080c"; g.beginPath(); g.arc(420, 170, 78, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = "#2c323c"; g.lineWidth = 8;
+    for (let a = 0; a < 24; a++) { const t = (a / 24) * Math.PI * 2; g.beginPath(); g.moveTo(420 + Math.cos(t) * 64, 170 + Math.sin(t) * 64); g.lineTo(420 + Math.cos(t) * 76, 170 + Math.sin(t) * 76); g.stroke(); }
+    g.fillStyle = "#3a4555"; g.beginPath(); g.arc(420, 170, 34, 0, Math.PI * 2); g.fill();
+    g.fillStyle = "#0c1a31"; g.beginPath(); g.arc(420, 170, 16, 0, Math.PI * 2); g.fill();
+    g.fillStyle = "#e3a73a"; g.font = "700 16px 'Barlow Condensed', sans-serif"; g.fillText("PDCA", 403, 286);
+    return c;
+  }
+
+  function welcome(r) {
+    const has = !!app.profile;
+    r.append(h("div", { class: "stack" },
+      h("section", { class: "hero" },
+        h("div", { class: "hero-copy" },
+          h("div", { class: "label", text: `${C.organization} · DWM learning` }),
+          h("h1", { text: "DWM QUEST" }),
+          h("div", { style: "font-family:var(--font-display);font-size:1.5rem;letter-spacing:.02em", text: "The Daily Excellence Challenge" }),
+          h("p", { class: "tagline", text: C.tagline }),
+          h("p", { text: "Join a fictional tyre plant as its DWM Improvement Champion. Output is slipping, a curing press keeps stopping and actions are overdue. Review the daily management system, find the cause and stop it coming back. About 15 minutes, plus a 15-question assessment." }),
+          h("div", { class: "row" },
+            h("button", { class: "btn accent", onclick: () => go(has ? "hub" : "register") }, has ? "Continue learning" : "Start Learning"),
+            has ? h("button", { class: "btn", style: "background:transparent;color:#fff;border-color:rgba(255,255,255,.4)", onclick: () => go("resume") }, "Resume Game") : null)),
+        h("div", { class: "hero-art" }, heroArt())),
+      h("div", { class: "flow", "aria-label": "DWM process flow" },
+        ...[["PLAN", ["Organisation structure, Role Sheet, Standards", "MP/CP Tree and MP Planning Sheet"]],
+          ["DO", ["Routine work to standard", "Track MP/CP at defined frequency and target"]],
+          ["CHECK", ["Any abnormality? No → continue routine", "Yes → restore normal safely, identify and record"]],
+          ["ACT", ["Occurred before? RCA and corrective action", "Revise standards, train, verify, deploy horizontally"]]]
+          .map(([t, li]) => h("div", null, h("h3", { text: t }), h("ul", null, ...li.map((x) => h("li", { text: x })))))),
+      h("div", { class: "grid2" }, ...Object.keys(DWM.CHARACTERS).map((k) => {
+        const c = DWM.CHARACTERS[k];
+        const lines = { arjun: "Targets, standards, review frequency and daily performance.", meera: "The DWM process, abnormalities, PDCA and standardisation.", kabir: "Why-Why Analysis and evidence-based RCA.", asha: "Effectiveness, horizontal deployment and sustaining results." };
+        return h("div", { class: "row panel", style: "flex-wrap:nowrap" }, h("div", { class: "portrait", html: DWM.ui.portrait(k) }), h("div", { style: "min-width:0" }, h("b", { text: c.name }), h("div", { class: "muted", style: "font-size:.85rem", text: c.role }), h("p", { style: "font-size:.9rem", text: lines[k] })));
+      })),
+      footer()));
+  }
+
+  function footer() {
+    return h("p", { class: "footer-note", text: `Prototype identity. All plant data, people and records in the scenarios are fictional and labelled SIMULATED. Official ${C.organization} branding is not used. Results are learning records only; no official certificate is issued.` });
+  }
+
+  function register(r) {
+    const S = Store.S;
+    const errs = {};
+    const fld = (id, label, type, ac, hint) => {
+      const inp = h("input", { id, name: id, type, autocomplete: ac, required: true });
+      errs[id] = h("span", { class: "err", id: id + "-err", "aria-live": "polite" });
+      inp.setAttribute("aria-describedby", id + "-err");
+      return h("div", { class: "field" }, h("label", { for: id, class: "label", text: label }), inp, hint ? h("span", { class: "muted", style: "font-size:.8rem", text: hint }) : null, errs[id]);
+    };
+    const form = h("form", { class: "panel stack", novalidate: true, style: "max-width:560px" },
+      h("h2", { text: "Register to start" }),
+      h("p", { class: "muted", text: S.mode === "central" ? "Your record is linked to your claude.ai sign-in, so you can return on any device and resume where you left off." : "Demo mode: this record stays in this browser only." }),
+      fld("empId", "Employee ID", "text", "off", "Letters, digits, - _ /, up to 20 characters"),
+      fld("empName", "Employee name", "text", "name"),
+      fld("empEmail", "Company email ID", "email", "email", C.allowedEmailDomains.length ? "Allowed: @" + C.allowedEmailDomains.join(", @") : null),
+      h("p", { class: "muted", style: "font-size:.82rem", text: `What is stored: your employee ID, name, company email, progress, decisions and assessment attempts. ${S.mode === "central" ? "Only you and the game owner (TQM cell) can see your record; other employees cannot." : ""}` }),
+      h("div", { class: "row" }, h("button", { class: "btn primary", type: "submit" }, "Start the game"), h("button", { class: "btn ghost", type: "button", onclick: () => go("welcome") }, "Back")));
+    let busy = false;
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      const id = form.empId.value.trim(), name = form.empName.value.trim(), email = form.empEmail.value.trim().toLowerCase();
+      errs.empId.textContent = L.validEmployeeId(id) ? "" : "Enter a valid employee ID.";
+      errs.empName.textContent = L.validName(name) ? "" : "Enter your name (2–80 characters).";
+      errs.empEmail.textContent = L.validEmail(email, C.allowedEmailDomains) ? "" : C.allowedEmailDomains.length ? "Use your company email address." : "Enter a valid email address.";
+      if (!L.validEmployeeId(id) || !L.validName(name) || !L.validEmail(email, C.allowedEmailDomains)) { form.querySelector(".err:not(:empty)")?.previousElementSibling?.focus?.(); return; }
+      busy = true;
+      // Never overwrite an existing record's start time: re-check the store first.
+      let existing = null;
+      try { existing = await Store.loadProfile(); } catch { /* treated as new; the save status will report any failure */ }
+      const now = new Date().toISOString();
+      if (existing) { app.profile = existing; app.state = L.migrateState(existing.state); toast("Welcome back. Your saved progress was found."); go("resume"); return; }
+      app.state = L.newState();
+      app.profile = { schemaVersion: L.SCHEMA_VERSION, employeeId: id, employeeName: name, email, gameStartAt: now, gameCompletedAt: null, currentMission: "Mission 1", progressPct: 0,
+        latestScorePct: null, assessmentAttempts: 0, assessmentStatus: "Not started", eligible: false, lastActivityAt: now, totalTimeSec: 0, createdAt: now, updatedAt: now,
+        attemptHistory: [], missionLog: [], recommended: [] };
+      app.commit(true);
+      go("hub");
+    });
+    r.append(form);
+  }
+
+  function resume(r) {
+    const p = app.profile, cp = app.state.checkpoint || { screen: "hub", label: "Mission Hub" };
+    r.append(h("div", { class: "panel stack", style: "max-width:640px" },
+      h("div", { class: "label", text: "Resume" }),
+      h("h2", { text: `Welcome back, ${p.employeeName}` }),
+      h("p", null, "Last saved checkpoint: ", h("b", { text: cp.label })),
+      h("div", { class: "progress", "aria-label": `Progress ${p.progressPct || 0}%` }, h("i", { style: `width:${p.progressPct || 0}%` })),
+      h("p", { class: "muted", text: `${L.missionsCompleted(app.state).length} of 6 missions complete · ${L.totalPoints(app.state)} points · started ${fmtDate(p.gameStartAt)}` }),
+      h("div", { class: "row" },
+        h("button", { class: "btn primary", onclick: () => resumeCheckpoint() }, "Resume Game"),
+        h("button", { class: "btn", onclick: () => go("hub") }, "Mission Hub"))));
+  }
+  function resumeCheckpoint() {
+    const cp = app.state.checkpoint || {};
+    if (cp.screen === "mission" && cp.mission && app.state.missions[cp.mission] && app.state.missions[cp.mission].status !== "completed") go("mission", { id: cp.mission });
+    else if (cp.screen === "assessment" && L.allMissionsDone(app.state) && (app.state.assessment || !(app.profile.attemptHistory || []).length)) go("assessment");
+    else if (cp.screen === "results" && (app.profile.attemptHistory || []).length) go("results");
+    else go("hub");
+  }
+
+  function hub(r) {
+    const st = app.state, p = app.profile;
+    const moved = !st.checkpoint || st.checkpoint.screen !== "hub";
+    st.checkpoint = { screen: "hub", label: "Mission Hub" };
+    const done = L.allMissionsDone(st);
+    const used = p.assessmentAttempts || 0;
+    const canTake = done && L.attemptsAllowed(C.maxAttempts, used) && !(p.attemptHistory || []).some((a) => a.passed);
+    const statusChip = (s) => ({ completed: h("span", { class: "chip ok", text: "Completed" }), in_progress: h("span", { class: "chip warn", text: "In progress" }), available: h("span", { class: "chip info", text: "Ready" }), locked: h("span", { class: "chip", text: "Locked" }) })[s];
+    r.append(h("div", { class: "stack" },
+      h("div", { class: "mission-head" },
+        h("div", null, h("div", { class: "label", text: `${p.employeeName} · ${p.employeeId}` }), h("h2", { text: "Mission Hub" })),
+        h("div", { class: "row" }, h("span", { class: "chip info", text: `${L.totalPoints(st)} points` }), Store.S.isOwner || Store.S.mode === "demo" ? h("button", { class: "btn small", onclick: () => go("admin") }, Store.S.mode === "demo" ? "Owner dashboard (demo)" : "Results dashboard") : null)),
+      h("div", { class: "panel stack", style: "gap:8px" },
+        h("div", { class: "row", style: "justify-content:space-between" }, h("span", { class: "label", text: "Overall progress" }), h("b", { class: "mono", text: `${p.progressPct || 0}%` })),
+        h("div", { class: "progress", "aria-hidden": "true" }, h("i", { style: `width:${p.progressPct || 0}%` })),
+        h("p", { class: "muted", style: "font-size:.85rem", text: `Six missions + the assessment. Started ${fmtDate(p.gameStartAt)}${p.gameCompletedAt ? " · completed " + fmtDate(p.gameCompletedAt) : ""}. Your progress saves automatically.` })),
+      h("div", { class: "missions" }, ...DWM.MISSIONS.map((m) => {
+        const ms = st.missions[m.id];
+        const label = ms.status === "completed" ? "Replay" : ms.status === "in_progress" ? "Resume mission" : "Start mission";
+        return h("article", { class: "mcard", "data-status": ms.status },
+          h("header", null, h("span", { class: "num", text: String(m.n).padStart(2, "0") }), h("div", { style: "min-width:0" }, h("div", { class: "label phase", text: m.phase }), h("h3", { text: m.title }))),
+          h("p", { text: m.summary }),
+          h("div", { class: "row", style: "justify-content:space-between" }, statusChip(ms.status),
+            ms.status === "locked" ? h("span", { class: "muted", style: "font-size:.82rem", text: `Complete Mission ${m.n - 1} first` }) :
+              h("button", { class: "btn small " + (ms.status === "completed" ? "" : "primary"), onclick: () => go("mission", { id: m.id, replay: ms.status === "completed" }) }, label)));
+      })),
+      h("article", { class: "mcard" },
+        h("header", null, h("span", { class: "num", text: "✓" }), h("div", null, h("div", { class: "label phase", text: "Certification" }), h("h3", { text: "Final assessment · 15 questions" }))),
+        h("p", { text: done ? `Pass mark ${C.passPercent}%. ${C.maxAttempts ? `Attempts used: ${used} of ${C.maxAttempts}.` : `Attempts used: ${used}.`}` : "Unlocks when all six missions are complete." }),
+        h("div", { class: "row" },
+          p.assessmentAttempts ? h("span", { class: "chip " + (p.eligible ? "ok" : "warn"), text: p.eligible ? "Eligible for Certification" : "Not Yet Eligible" }) : null,
+          p.assessmentAttempts ? h("span", { class: "chip", text: `Latest ${p.latestScorePct}%` }) : null,
+          canTake ? h("button", { class: "btn primary small", onclick: () => go("assessment") }, st.assessment ? "Resume assessment" : used ? "Retake assessment" : "Start assessment") : null,
+          used ? h("button", { class: "btn small", onclick: () => go("results") }, "View latest result") : null)),
+      footer()));
+    if (moved) app.commit(false);
+  }
+
+  // ---------------- mission controller ----------------
+  function missionScreen(r, arg) {
+    const m = DWM.MISSION_BY_ID[arg.id];
+    const real = app.state.missions[m.id];
+    if (real.status === "locked") { go("hub"); return; }
+    const replay = !!arg.replay && real.status === "completed";
+    const ms = replay ? { status: "in_progress", step: 0, answers: {}, tries: {}, points: 0, seen: [] } : real;
+    if (!replay && real.status === "available") { real.status = "in_progress"; real.startedAt = new Date().toISOString(); }
+    ms.seen = ms.seen || [];
+    const save = (meaningful) => { if (!replay) app.commit(meaningful); };
+
+    const container = h("div", { class: "stack" });
+    r.append(container);
+    let walker = null;
+
+    function setCheckpoint() {
+      if (replay) return;
+      const s = m.steps[ms.step];
+      app.state.checkpoint = { screen: "mission", mission: m.id, step: ms.step, label: `Mission ${m.n}: ${m.title}${s && s.title ? " · " + s.title : ""}` };
+    }
+
+    function draw() {
+      if (walker) { walker.destroy(); walker = null; }
+      ms.step = Math.min(ms.step, m.steps.length - 1);
+      const step = m.steps[ms.step];
+      setCheckpoint();
+      const head = h("div", { class: "mission-head" },
+        h("div", null, h("div", { class: "label", text: `Mission ${m.n} · ${m.phase}${replay ? " · REPLAY (saved progress unchanged)" : ""}` }), h("h2", { text: m.title })),
+        h("div", { class: "row" }, h("div", { class: "steps", "aria-label": `Step ${ms.step + 1} of ${m.steps.length}` }, ...m.steps.map((_, i) => h("i", { class: i < ms.step ? "done" : i === ms.step ? "cur" : "" }))),
+          h("span", { class: "chip info", text: `${ms.points || 0} pts` })));
+      const body = h("div", { class: "stack" });
+      container.replaceChildren(head, body);
+
+      const ctx = {
+        mission: m, step, ms,
+        check(answer, correct) {
+          ms.tries[step.id] = (ms.tries[step.id] || 0) + 1;
+          ms.answers[step.id] = { ...answer, correct, at: new Date().toISOString() };
+          if (correct) ms.points = (ms.points || 0) + DWM.missions.pointsFor(ms.tries[step.id]);
+          save(true);
+        },
+        done() {
+          if (ms.step >= m.steps.length - 1) return finish();
+          ms.step++; save(true); draw(); focusMain();
+        },
+      };
+
+      if (m.station) return drawStation(body, step, ctx);
+      body.append(DWM.missions.renderStep(ctx));
+    }
+
+    function drawStation(body, step, ctx) {
+      const scored = m.steps.filter((s) => s.title);
+      const checklist = h("ol", { class: "checklist", "aria-label": "Station review sequence" }, ...scored.map((s) => {
+        const i = m.steps.indexOf(s);
+        return h("li", { class: i < ms.step ? "done" : i === ms.step ? "cur" : "", text: `${scored.indexOf(s) + 1}. ${s.title}` });
+      }));
+      if (step.type === "walk" && !ms.arrived) {
+        body.append(dialogue(step.speaker, step.say));
+        const scene = h("div");
+        body.append(scene);
+        walker = DWM.station.mountWalk(scene, () => { ms.arrived = true; save(true); draw(); });
+        return;
+      }
+      if (step.type === "walk") {
+        body.append(dialogue(step.arrive.speaker, step.arrive.say), h("div", { class: "row" }, h("button", { class: "btn primary", onclick: () => ctx.done() }, "Open the board →")));
+        return;
+      }
+      const req = step.requires || [];
+      const qArea = h("div", { class: "stack" });
+      const brd = DWM.station.board(m, ms.seen, req, (k) => {
+        if (!ms.seen.includes(k)) { ms.seen.push(k); save(true); }
+        drawQuestion();
+      });
+      function drawQuestion() {
+        const missing = req.filter((k) => !ms.seen.includes(k));
+        if (missing.length) {
+          qArea.replaceChildren(dialogue(step.speaker, `Open board section${missing.length > 1 ? "s" : ""} ${missing.join(" and ")} (highlighted) to review it.`));
+          return;
+        }
+        if (!qArea.dataset.ready) { qArea.dataset.ready = "1"; qArea.replaceChildren(DWM.missions.renderStep(ctx)); }
+      }
+      body.append(brd.el, h("div", { class: "station-grid" },
+        h("div", { class: "panel flat" }, h("div", { class: "label", text: "Review sequence" }), checklist), h("div", { class: "panel" }, qArea)));
+      drawQuestion();
+      // Opening the most relevant section first keeps the board in context on small screens.
+      if (req.length && req.every((k) => ms.seen.includes(k))) brd.open(req[req.length - 1]);
+    }
+
+    function finish() {
+      if (!replay) {
+        real.status = "completed"; real.completedAt = real.completedAt || new Date().toISOString(); real.step = m.steps.length - 1;
+        app.profile.missionLog = app.profile.missionLog || [];
+        if (!app.profile.missionLog.some((x) => x.mission === m.id)) app.profile.missionLog.push({ mission: m.id, completedAt: real.completedAt, points: real.points });
+        L.unlockMissions(app.state);
+        const nx = DWM.MISSIONS[m.n];
+        app.state.checkpoint = nx ? { screen: "mission", mission: nx.id, step: 0, label: `Mission ${nx.n}: ${nx.title}` } : { screen: "assessment", label: "Certification assessment" };
+        app.commit(true);
+      }
+      const next = DWM.MISSIONS[m.n];
+      container.replaceChildren(h("div", { class: "panel stack" },
+        h("div", { class: "label", text: replay ? "Replay complete" : `Mission ${m.n} complete` }), h("h2", { text: m.title }),
+        h("p", { text: replay ? "Replay finished. Your saved progress and points are unchanged." : `You earned ${ms.points} points. Progress saved.` }),
+        h("div", { class: "row" },
+          next && !replay ? h("button", { class: "btn primary", onclick: () => go("mission", { id: next.id }) }, `Start Mission ${next.n} →`) : null,
+          !next && !replay ? h("button", { class: "btn primary", onclick: () => go("assessment") }, "Go to the assessment →") : null,
+          h("button", { class: "btn", onclick: () => go("hub") }, "Mission Hub"))));
+      focusMain();
+    }
+
+    if (!replay) app.commit(true);
+    draw();
+  }
+
+  function assessmentScreen(r) {
+    const p = app.profile;
+    if (!L.allMissionsDone(app.state)) { toast("Complete all six missions to unlock the assessment."); return go("hub"); }
+    if (!app.state.assessment && (!L.attemptsAllowed(C.maxAttempts, p.assessmentAttempts || 0) || (p.attemptHistory || []).some((a) => a.passed))) return go("results");
+    DWM.assessment.render(r, app);
+  }
+  function results(r, data) { DWM.assessment.renderResults(r, app, data); }
+  function admin(r) { DWM.admin.render(r, app); }
+  function errorScreen(r, msg) {
+    r.append(h("div", { class: "panel stack", style: "max-width:600px" }, h("h2", { text: "Can't load your progress" }), h("p", { text: msg }), h("button", { class: "btn primary", onclick: () => boot() }, "Try again")));
+  }
+
+  // ---------------- boot ----------------
+  async function boot() {
+    root().replaceChildren(h("p", { class: "muted", text: "Loading DWM QUEST…" }));
+    if (!document.querySelector(".topbar")) topbar();
+    await Store.init();
+    if (!document.querySelector(".mode-banner")) modeBanner();
+    let prof;
+    try { prof = await Store.loadProfile(); }
+    catch { return go("error", "We couldn't reach the results store, so your saved progress isn't shown yet. Nothing has been lost. Check your connection and try again."); }
+    if (prof) {
+      app.profile = prof;
+      app.state = L.migrateState(prof.state);
+      // Reconcile an attempt that was saved before the profile update completed.
+      if (app.state.assessment) {
+        try {
+          const mine = await Store.listMyAttempts();
+          const hit = mine.find((a) => a.attemptId === app.state.assessment.attemptId && a.submittedAt);
+          if (hit) DWM.assessment.applyAttempt(app, hit);
+        } catch { /* keep in-progress attempt */ }
+      }
+      go("resume");
+    } else go("welcome");
+  }
+
+  window.addEventListener("beforeunload", (e) => { if (Store.hasPending()) { e.preventDefault(); e.returnValue = ""; } });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  DWM.app = app;
+})();
+
+</script>
+
+</body>
+</html>
